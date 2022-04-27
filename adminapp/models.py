@@ -2,12 +2,13 @@ from django.db import models
 
 
 class Gallery(models.Model):
-    pass
+    class Meta:
+        verbose_name = 'Gallery'
 
 
 class Image(models.Model):
     image = models.ImageField()
-    gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE)
+    gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Images'
@@ -18,13 +19,26 @@ class AbstractPage(models.Model):
     is_active = models.BooleanField()
     title = models.CharField(max_length=50)
     text = models.TextField()
+    main_image = models.ImageField(default='bsimg.jpeg', null=True, blank=True)
     seo_url = models.URLField()
     seo_title = models.CharField(max_length=50)
-    seo_keywords = models.CharField(max_length=80)
+    seo_keywords = models.TextField()
     seo_description = models.TextField()
-    date_created = models.DateField()
-    date_updated = models.DateField()
-    gallery = models.ForeignKey(Gallery, on_delete=models.PROTECT)
+    date_created = models.DateField(auto_now_add=True)
+    date_updated = models.DateField(auto_now=True)
+    gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.title
+
+
+class AbstractProperties(models.Model):
+    flag_3d = models.BooleanField(verbose_name='3D')
+    flag_2d = models.BooleanField(verbose_name='2D')
+    flag_imax = models.BooleanField(verbose_name='IMAX')
 
     class Meta:
         abstract = True
@@ -42,12 +56,9 @@ class BaseSitePage(AbstractPage):
 
 # Models for all movies.
 
-class Movie(AbstractPage):
+class Movie(AbstractPage, AbstractProperties):
     trailer_url = models.URLField()
     duration = models.PositiveSmallIntegerField()
-    flag_3d = models.BooleanField(verbose_name='3D')
-    flag_2d = models.BooleanField(verbose_name='2D')
-    flag_imax = models.BooleanField(verbose_name='IMAX')
     start_sale = models.DateField()
     finish_sale = models.DateField()
 
@@ -68,13 +79,10 @@ class Cinema(AbstractPage):
 
 # Models for hall.
 
-class Hall(AbstractPage):
+class Hall(AbstractPage, AbstractProperties):
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
     seats_config = models.CharField(max_length=50, verbose_name='Simple seats config')
     vip_seats_config = models.CharField(max_length=50, verbose_name='VIP seats config')
-    flag_3d = models.BooleanField(verbose_name='3D')
-    flag_2d = models.BooleanField(verbose_name='2D')
-    flag_imax = models.BooleanField(verbose_name='IMAX')
 
     class Meta:
         verbose_name_plural = 'Halls'
@@ -83,20 +91,16 @@ class Hall(AbstractPage):
 
 # Models for sessions pages and reserved page
 
-class Session(models.Model):
+class Session(AbstractProperties):
     hall = models.ForeignKey(Hall, on_delete=models.PROTECT)
     movie = models.ForeignKey(Movie, on_delete=models.PROTECT)
     start = models.DateTimeField()
-    flag_3d = models.BooleanField(verbose_name='3D')
-    flag_2d = models.BooleanField(verbose_name='2D')
-    flag_imax = models.BooleanField(verbose_name='IMAX')
     seats_reserved = models.CharField(max_length=50)
     seats_busy = models.CharField(max_length=50)
 
     class Meta:
         verbose_name_plural = 'Sessions'
         verbose_name = 'Session'
-
 
 
 # Models for news page and promotions page
@@ -108,4 +112,3 @@ class Articles(BaseSitePage):
     class Meta:
         verbose_name_plural = 'News and promotions'
         verbose_name = 'News and promotion'
-

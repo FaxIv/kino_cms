@@ -1,34 +1,46 @@
-# from django.forms import ModelForm, TextInput, DateTimeInput, DateInput, Textarea, URLInput, CheckboxInput
-# from .models import *
-#
-#
-# class MovieForm(ModelForm):
-#
-#     class Meta:
-#         model = Movie
-#         fields = ('title',
-#                   'info',
-#                   'trailer_url',
-#                   'duration',
-#                   'flag_3d',
-#                   'flag_2d',
-#                   'flag_imax',
-#                   'start_sale',
-#                   'finish_sale',
-#                   'date_created',
-#                   'date_updated',
-#                   'gallery')
-#
-#         widgets = {
-#             'title': TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
-#             'info': Textarea(attrs={'class': 'form-control', 'placeholder': 'Info'}),
-#             'trailer_url': URLInput(attrs={'class': 'form-control'}),
-#             'duration': TextInput(attrs={'class': 'form-control'}),
-#             'flag_3d': CheckboxInput(attrs={}),
-#             'flag_2d': CheckboxInput(attrs={}),
-#             'flag_imax': CheckboxInput(attrs={}),
-#             'start_sale': DateInput(attrs={'class': 'form-control'}),
-#             'finish_sale': DateInput(attrs={'class': 'form-control'}),
-#             'date_created': DateInput(attrs={'class': 'form-control'}),
-#             'date_updated': DateInput(attrs={'class': 'form-control'}),
-#         }
+from django.forms import ModelForm, TextInput, DateInput, Textarea, URLInput, CheckboxInput, NumberInput, HiddenInput, ImageField
+from .models import *
+
+
+class MovieForm(ModelForm):
+
+    class Meta:
+        model = Movie
+        fields = '__all__'
+
+        widgets = {
+            'is_active': CheckboxInput(attrs={'class': 'form-check-input'}),
+            'title': TextInput(attrs={'class': 'form-control'}),
+            'text': Textarea(attrs={'class': 'form-control', 'rows': '3'}),
+            'flag_3d': CheckboxInput(attrs={'class': 'form-check-input'}),
+            'flag_2d': CheckboxInput(attrs={'class': 'form-check-input'}),
+            'flag_imax': CheckboxInput(attrs={'class': 'form-check-input'}),
+            'trailer_url': URLInput(attrs={'class': 'form-control'}),
+            'seo_url': URLInput(attrs={'class': 'form-control'}),
+            'seo_title': TextInput(attrs={'class': 'form-control'}),
+            'seo_keywords': Textarea(attrs={'class': 'form-control', 'rows': '3'}),
+            'seo_description': Textarea(attrs={'class': 'form-control', 'rows': '3'}),
+            'duration': NumberInput(attrs={'class': 'form-control', 'placeholder': 'У хвилинах'}),
+            'start_sale': DateInput(attrs={'class': 'form-control'}),
+            'finish_sale': DateInput(attrs={'class': 'form-control'}),
+            'date_created': DateInput(attrs={'class': 'form-control'}),
+            'date_updated': DateInput(attrs={'class': 'form-control'}),
+            'gallery': HiddenInput(),
+        }
+
+
+class ImageForm(ModelForm):
+
+    # def save(self, commit=True):
+    #     image = super(ImageForm, self).save(commit=False)
+
+
+    class Meta:
+        model = Image
+        fields = '__all__'
+
+        widgets = {
+            'gallery': HiddenInput(),
+        }
+
+

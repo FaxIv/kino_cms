@@ -1,0 +1,33 @@
+{% extends 'adminapp/elements/base.html' %}
+
+{% block title %}Фільми{% endblock %}
+
+{% block content %}
+<h1>Фільми</h1>
+
+<div class="row g-5 offset-md-2 col-md-8 align-items-center">
+    {% for mv in movie %}
+    <div class="col-md-3 text-center">
+        <a href="{% url 'movie-update' mv.id %}" class="small-box">
+            <div class="small-box">
+                <img src="{{ mv.main_image.url }}" width="120" height="150">
+                <p>{{ mv.title }}</p>
+            </div>
+        </a>
+        <a href="{% url 'movie-delete' mv.id %}">
+            <button class="btn btn-primary dz-clickable" type="button">
+                Видалити
+            </button>
+        </a>
+    </div>
+    {% endfor %}
+    <div class="col-md-3 text-center">
+        <a href="./moviepage">
+            <button class="btn btn-success col fileinput-button dz-clickable" type="button">
+                <i class="fas fa-plus"></i>
+                <span>Додати</span>
+            </button>
+        </a>
+    </div>
+</div>
+{% endblock %}

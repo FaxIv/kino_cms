@@ -1,0 +1,21 @@
+{% extends 'adminapp/elements/base.html' %}
+
+{% block title %}Movie detail{% endblock %}
+
+{% block content %}
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Фільм</h3>
+    </div>
+    {{ models.title }}
+    {% for im in img %}
+    <img src="{{ im.image.url }}" alt="connect" style="max-height:300px">
+    {% endfor %}
+    <!--    <form method="post">-->
+    <!--        {% csrf_token %}-->
+    <!--        <button type="submit" class="btn btn-primary">Видалити поєкт</button>-->
+    <!--    </form>-->
+    <!--    <img src="{{ img_obj.image.url}}" alt="connect" style="max-height:300px">-->
+</div>
+{% endblock %}
+

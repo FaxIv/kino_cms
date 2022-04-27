@@ -1,0 +1,16 @@
+{% extends 'adminapp/elements/base.html' %}
+
+{% block title %}Cinema page{% endblock %}
+
+{% block content %}
+<div class="card card-primary">
+    <div class="card-header">
+        <h3 class="card-title">Видалити фільм</h3>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Видалити поєкт</button>
+    </form>
+</div>
+{% endblock %}
+
