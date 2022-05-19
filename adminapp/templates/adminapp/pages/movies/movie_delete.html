@@ -1,0 +1,22 @@
+{% extends 'adminapp/elements/base.html' %}
+
+{% block title %}Видалити фільм{% endblock %}
+
+{% block content %}
+<br>
+<div class="d-flex justify-content-center align-items-center" style="margin-top:10%">
+    <div class="card" style="width:400px;height:150px">
+        <div class="card-header">
+            <h3 class="card-title">Ви впевнені що хочете видалити цей фільм?</h3>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="d-flex align-items-center justify-content-around" style="margin-top:30px;">
+                <button type="submit" class="btn btn-danger">Видалити фільм</button>
+                <button type="button" class="btn btn-outline-info" onclick="history.back();">Повернутися</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

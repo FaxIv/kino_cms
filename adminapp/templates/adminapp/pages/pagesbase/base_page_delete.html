@@ -1,0 +1,21 @@
+{% extends 'adminapp/elements/base.html' %}
+
+{% block title %}Видалити сторінку{% endblock %}
+
+{% block content %}
+<br>
+<div class="d-flex justify-content-center align-items-center" style="margin-top:10%">
+    <div class="card" style="width:420px;height:150px">
+        <div class="card-header">
+            <h3 class="card-title">Ви впевнені що хочете видалити цю сторінку?</h3>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="d-flex align-items-center justify-content-around" style="margin-top:30px;">
+                <button type="submit" class="btn btn-danger">Видалити сторінку</button>
+                <button type="button" class="btn btn-outline-info" onclick="history.back();">Повернутися</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,244 @@
+{% extends 'adminapp/elements/base.html' %}
+{% load static %}
+{% block title %}Сторінка кінотеатру{% endblock %}
+
+{% block content %}
+<style>
+    .hidden {
+        display: none
+    }
+
+    .img-field {
+        outline: 1px solid #000;
+    }
+
+    .edit-hall {
+        width: 20px;
+    }
+
+    .delete-hall {
+        width: 20px;
+    }
+
+    .im-form {
+        width: 270px;
+        height: 200px;
+    }
+
+    .btn-tool {
+        width: 10px;
+        height: 40px;
+    }
+
+    .image-error {
+        list-style-type: none;
+        color: red;
+    }
+
+    .er-im {
+        height: 35px;
+    }
+
+    .add-f-btn {
+        margin-bottom: 5%;
+    }
+</style>
+<div>
+    <div class="card-header">
+        <h3 class="card-title">Сторінка кінотеатру</h3>
+    </div>
+    <div class="fadeout" style="float:right;">
+        {% for msg in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" style="margin-top:1%" role="alert">
+            {{ msg }}
+        </div>
+        {% endfor %}
+    </div>
+    <br>
+    <form id="main-form-content" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-check">
+            {{ form.is_active }}
+            <label>Активна</label>
+        </div>
+        <br>
+        <div class="form-group" style="width:400px">
+            <label>Назва кінотеатра:</label>
+            {{ form.title }}
+        </div>
+        <div class="form-group">
+            <label>Опис:</label>
+            {{ form.text }}
+        </div>
+        <div class="form-group">
+            <label>Умови:</label>
+            {{ form.condition }}
+        </div>
+        <div class="form-group">
+            <div id="main_image" class="row align-items-center">
+                <label style="margin-left:10px;width:200px">Логотип:</label>
+                <img id="id_cinema-main_image-card"
+                     src="{{ form.instance.main_image_url }}" class="img-field" alt="main_image" width="200"
+                     height="100">
+                <div class="d-flex justify-content-around" style="width:320px;margin:15px">
+                    <button id="id_cinema-main_image_btn" class="btn btn-outline-success add-img-btn"
+                            type="button">
+                        <span>Завантажити</span>
+                    </button>
+                    <button id="movie-main_image-clear_id_btn" class="btn btn-outline-danger clear-img-btn"
+                            type="button">
+                        <span>Видалити</span>
+                    </button>
+                    <div hidden>{{ form.main_image }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div id="top_banner_image" class="row align-items-center">
+                <label style="margin-left:10px;width:200px">Фото верхнього банера:</label>
+                <img id="id_cinema-top_banner_image-card" class="img-field"
+                     src="{{ form.instance.top_banner_image_url }}" alt="top_banner_image" width="200" height="100">
+                <div class="d-flex justify-content-around" style="width:320px;margin:15px">
+                    <button id="cinema-top_banner_image_btn" class="btn btn-outline-success add-img-btn"
+                            type="button">
+                        <span>Завантажити</span>
+                    </button>
+                    <button id="cinema-top_banner_image-clear_id_btn"
+                            class="btn btn-outline-danger clear-img-btn" type="button">
+                        <span>Видалити</span>
+                    </button>
+                    <div hidden>{{ form.top_banner_image}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            {{ image_forms.management_form }}
+            <div id="empty-form" class="hidden empty-form">
+                <div class="d-flex flex-column align-items-end">
+                    <button id="id_images-__prefix__-btn_del" class="btn btn-tool" type="button"
+                            onclick="deleteImage(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                    <img id="id_images-__prefix__-image-card" src="/media/bsimg.jpeg" class="img-field" width="200"
+                         height="100">
+                    <div hidden>{{ image_forms.empty_form}}</div>
+                </div>
+                <div class="er-im"></div>
+                <button id="id_images-__prefix__-image_btn" class="btn btn-outline-success dz-clickable" type="button"
+                        onclick="addImage(this)">
+                    <span>Додати</span>
+                </button>
+            </div>
+            <div>
+                <label>Галерея:</label>
+            </div>
+            <div id="im-form" class="row">
+                <div class="d-flex justify-content-center align-items-center" style="width:175px;height:200px;">
+                    <label>Розмір: 1000x190</label>
+                </div>
+                {% for form in image_forms %}
+                <div id="images-__base__" class="vis-form d-flex flex-column align-items-center im-form">
+                    <div class="d-flex flex-column align-items-end">
+                        <button class="btn btn-tool" type="button" onclick="deleteImage(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <img id="id_images-__base__-image-card" class="img-field" src="{{ form.instance.image_url }}"
+                             width="200" height="100">
+                        <div hidden>{{ form }}</div>
+                    </div>
+                    <div class="er-im"></div>
+                    <button class="btn btn-outline-success dz-clickable" type="button" onclick="addImage(this)">
+                        <span>Додати</span>
+                    </button>
+                </div>
+                {% endfor %}
+                <div id="im-add-more" class="col-md-2 d-flex justify-content-center align-items-center im-add-more">
+                    <button class="btn btn-success dz-clickable add-f-btn" id="add-more" type="button">
+                        <i class="fas fa-plus"></i>
+                        <span>Додати зображення</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% if halls != None %}
+        <div class="form-group">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><b>Список кінотеатрів</b></h3>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-border">
+                                <thead>
+                                <tr>
+                                    <th>Назва</th>
+                                    <th>Дата створення</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for hall in halls %}
+                                <tr>
+                                    <td>{{ hall.title }}</td>
+                                    <td>{{ hall.date_created|date:'Y-m-d' }}</td>
+                                    <td class="edit-hall"><a href="{% url 'hall-update' form.instance.id hall.id %}"><i
+                                            class="fas fa-pen"></i></a></td>
+                                    <td class="delete-hall"><a
+                                            href="{% url 'hall-delete' form.instance.id hall.id %}"><i
+                                            class="fas fa-trash"></i></a></td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <a href="{% url 'hall-create' form.instance.id %}">
+                <button style="margin-left:43%;margin-top:1%;margin-bottom:2%"
+                        class="btn btn-outline-success dz-clickable" type="button">
+                    <span>Додати зал</span>
+                </button>
+            </a>
+        </div>
+        {% endif %}
+        <div class="col-md-8 offset-md-2 card">
+            <div class="card-header">
+                <h3 class="card-title">SEO блок</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>URL:</label>
+                    {{ form.seo_url }}
+                </div>
+                <div class="form-group">
+                    <label>Title:</label>
+                    {{ form.seo_title }}
+                </div>
+                <div class="form-group">
+                    <label>Keywords:</label>
+                    {{ form.seo_keywords }}
+                </div>
+                <div class="form-group">
+                    <label>Descriptions:</label>
+                    {{ form.seo_description }}
+                </div>
+            </div>
+        </div>
+        <div>
+            <div style="margin-left:45%;">
+                <button name="save-button" type="submit" class="btn btn-primary">Зберегти</button>
+            </div>
+        </div>
+        <br>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<!--JS for Cinemapage-->
+<script src="{% static 'adminapp/js/standart_site_page.js' %}"></script>
+{% endblock %}
