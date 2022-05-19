@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import date
 
 
 class Gallery(models.Model):
@@ -10,6 +11,13 @@ class Image(models.Model):
     image = models.ImageField()
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE, null=True, blank=True)
 
+    @property
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
+        else:
+            return "/media/bsimg.jpeg"
+
     class Meta:
         verbose_name_plural = 'Images'
         verbose_name = 'Image'
@@ -19,7 +27,7 @@ class AbstractPage(models.Model):
     is_active = models.BooleanField()
     title = models.CharField(max_length=50)
     text = models.TextField()
-    main_image = models.ImageField(default='bsimg.jpeg', null=True, blank=True)
+    main_image = models.ImageField(null=True, blank=True)
     seo_url = models.URLField()
     seo_title = models.CharField(max_length=50)
     seo_keywords = models.TextField()
@@ -27,6 +35,13 @@ class AbstractPage(models.Model):
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE, null=True, blank=True)
+
+    @property
+    def main_image_url(self):
+        if self.main_image and hasattr(self.main_image, 'url'):
+            return self.main_image.url
+        else:
+            return "/media/bsimg.jpeg"
 
     class Meta:
         abstract = True
@@ -47,7 +62,7 @@ class AbstractProperties(models.Model):
 # Base pages site (about, cafe, children's room, VIP hall, advertising).
 
 class BaseSitePage(AbstractPage):
-    type = models.CharField(max_length=20)
+    type = models.CharField(max_length=20, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Base pages'
@@ -70,7 +85,15 @@ class Movie(AbstractPage, AbstractProperties):
 # Models for all cinemas.
 
 class Cinema(AbstractPage):
+    top_banner_image = models.ImageField(null=True, blank=True)
     condition = models.TextField()
+
+    @property
+    def top_banner_image_url(self):
+        if self.top_banner_image and hasattr(self.top_banner_image, 'url'):
+            return self.top_banner_image.url
+        else:
+            return "/media/bsimg.jpeg"
 
     class Meta:
         verbose_name_plural = 'Cinemas'
@@ -80,9 +103,9 @@ class Cinema(AbstractPage):
 # Models for hall.
 
 class Hall(AbstractPage, AbstractProperties):
-    cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE)
+    cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE, null=True, blank=True)
     seats_config = models.CharField(max_length=50, verbose_name='Simple seats config')
-    vip_seats_config = models.CharField(max_length=50, verbose_name='VIP seats config')
+    vip_seats_config = models.CharField(max_length=50, null=True, blank=True, verbose_name='VIP seats config')
 
     class Meta:
         verbose_name_plural = 'Halls'
@@ -95,8 +118,8 @@ class Session(AbstractProperties):
     hall = models.ForeignKey(Hall, on_delete=models.PROTECT)
     movie = models.ForeignKey(Movie, on_delete=models.PROTECT)
     start = models.DateTimeField()
-    seats_reserved = models.CharField(max_length=50)
-    seats_busy = models.CharField(max_length=50)
+    seats_reserved = models.CharField(max_length=50, null=True, blank=True)
+    seats_busy = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Sessions'

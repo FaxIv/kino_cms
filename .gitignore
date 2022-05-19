@@ -114,6 +114,8 @@ venv.bak/
 
 admlte/
 media/
+plugins/
+
 # Spyder project settings
 .spyderproject
 .spyproject

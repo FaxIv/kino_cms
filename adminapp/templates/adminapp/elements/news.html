@@ -1,7 +1,52 @@
 {% extends 'adminapp/elements/base.html' %}
 
-{% block title %}News{% endblock %}
+{% block title %}Сторінка новин{% endblock %}
 
 {% block content %}
-  <h1>Work News</h1>
+<br>
+<div>
+    <div class="col-md-3 fadeout" style="float:left;">
+        {% for msg in messages %}
+        <div class="alert alert-success" role="alert">
+            {{ msg }}
+        </div>
+        {% endfor %}
+    </div>
+    <div class="col-md-2 text-center" style="float:right;">
+        <a href="{% url 'pages-create' %}">
+            <button class="btn btn-success  fileinput-button dz-clickable" type="button">
+                <i class="fas fa-plus"></i>
+                <span>Додати новину</span>
+            </button>
+        </a>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<div class="d-flex justify-content-center" style="margin-bottom:1%"><h2>Список новин</h2></div>
+<div class="card-body col-md-10 offset-md-1" style="background:#fff">
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th style="width:40%">Назва</th>
+            <th>Дата створення</th>
+            <th style="width:10%">Статус</th>
+            <th style="width:40px"></th>
+            <th style="width:40px"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for page in pages %}
+        <tr>
+            <td>{{ page.title }}</td>
+            <td>{{ page.date_created|date:'Y-m-d'}}</td>
+            <td>{{ page.is_active.value }}</td>
+            <td class="edit-page"><a href="{% url 'pages-update' page.id %}"><i class="fas fa-pen"></i></a></td>
+            <td class="delete-pagel"><a href="{% url 'pages-delete' page.id %}"><i class="fas fa-trash"></i></a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

@@ -1,14 +1,68 @@
 {% extends 'adminapp/elements/base.html' %}
 
-{% block title %}Cinemas{% endblock %}
+{% block title %}Кінотеатри{% endblock %}
 
 {% block content %}
-<h1>Cinemas</h1>
-<a href="./cinemapage" class="nav-link active">
-<!--    <i class="fa-solid fa-plus"></i>-->
-    <p>
-        Add cinema
-    </p>
-</a>
+<style>
+    .cinema-div {
+        width: 250px;
+        height: 200px;
+    }
+</style>
+<br>
+<div>
+    <div class="fadeout" style="float:left;">
+        {% for msg in messages %}
+        <div class="alert alert-success" role="alert">
+            {{ msg }}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<br>
+<br>
+<br>
+<div>
+    <div class="d-flex justify-content-center" style="margin-bottom:1%"><h2>Список кінотеатрів</h2></div>
+    <div class="row d-flex offset-md-2 col-md-8 align-items-center">
+        {% for cinema in cinemas %}
+        <div class="cinema-div d-flex justify-content-center align-items-start">
+            <div class="d-flex flex-row-reverse">
+                <a href="{% url 'cinema-delete' cinema.id %}">
+                    <button class="btn btn-tool" type="button" style="width:10px; height:40px;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </a>
+                <a href="{% url 'cinema-update' cinema.id %}">
+                    <div class="text-center" style="max-width:200px">
+                        <img src="{{ cinema.main_image_url }}" width="200" height="150">
+                        <p>{{ cinema.title }}</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="cinema-div d-flex justify-content-center align-items-center">
+            <a class="add-cinema-fa" href="{% url 'cinema-create' %}">
+                <i class="fas fa-plus" style="font-size:70px;color:green"></i>
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+    function fadeOut() {
+        $(".fadeout").fadeToggle(500, "swing", function () {
+            this.remove();
+        });
+    }
+
+    var delay = 3000;
+    setTimeout(fadeOut, delay);
+
+
+</script>
+{% endblock %}
+
+{% block script %}
 
 {% endblock %}

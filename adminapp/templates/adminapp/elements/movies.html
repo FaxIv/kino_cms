@@ -3,14 +3,37 @@
 {% block title %}Фільми{% endblock %}
 
 {% block content %}
-<h1>Фільми</h1>
+<style>
 
-<div class="row g-5 offset-md-2 col-md-8 align-items-center">
-    {% for mv in movie %}
+</style>
+<br>
+<div>
+    <div class="col-md-3 fadeout" style="float:left;">
+        {% for msg in messages %}
+        <div class="alert alert-success" role="alert">
+            {{ msg }}
+        </div>
+        {% endfor %}
+    </div>
+    <div class="col-md-2 text-center" style="float:right;">
+        <a href="./moviepage">
+            <button class="btn btn-success  fileinput-button dz-clickable" type="button">
+                <i class="fas fa-plus"></i>
+                <span>Додати фільм</span>
+            </button>
+        </a>
+    </div>
+</div>
+<br>
+<br>
+{% if current_movies %}
+<div class="col-md-3 offset-md-4" style="margin-bottom:1%"><h2>Список поточних фільмів</h2></div>
+<div class="row offset-md-2 col-md-8 align-items-center">
+    {% for mv in current_movies %}
     <div class="col-md-3 text-center">
-        <a href="{% url 'movie-update' mv.id %}" class="small-box">
-            <div class="small-box">
-                <img src="{{ mv.main_image.url }}" width="120" height="150">
+        <a href="{% url 'movie-update' mv.id %}">
+            <div class="">
+                <img src="{{ mv.main_image_url }}" width="200" height="200">
                 <p>{{ mv.title }}</p>
             </div>
         </a>
@@ -21,13 +44,39 @@
         </a>
     </div>
     {% endfor %}
+</div>
+{% endif %}
+<br>
+{% if coming_movies %}
+<div class="col-md-5 offset-md-3" style="margin-bottom:1%"><h2>Список фільмів, що скоро вийдуть в прокат</h2></div>
+<div class="row offset-md-2 col-md-8 align-items-center">
+    {% for mv in coming_movies %}
     <div class="col-md-3 text-center">
-        <a href="./moviepage">
-            <button class="btn btn-success col fileinput-button dz-clickable" type="button">
-                <i class="fas fa-plus"></i>
-                <span>Додати</span>
+        <a href="{% url 'movie-update' mv.id %}">
+            <div class="">
+                <img src="{{ mv.main_image_url }}" width="200" height="200">
+                <p>{{ mv.title }}</p>
+            </div>
+        </a>
+        <a href="{% url 'movie-delete' mv.id %}">
+            <button class="btn btn-primary dz-clickable" type="button">
+                Видалити
             </button>
         </a>
     </div>
+    {% endfor %}
 </div>
+{% endif %}
+<script>
+    function fadeOut()
+    {
+        $(".fadeout").fadeToggle(500, "swing",function(){
+                  this.remove();
+                });
+    }
+
+    var delay = 3000;
+    setTimeout(fadeOut, delay);
+</script>
+
 {% endblock %}

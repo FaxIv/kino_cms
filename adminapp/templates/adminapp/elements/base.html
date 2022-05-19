@@ -44,7 +44,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="index.html" class="nav-link">Головна</a>
+        <a href="/adminapp" class="nav-link">Головна</a>
       </li>
     </ul>
 
@@ -208,7 +208,7 @@
             <a href="/adminapp/banners" class="nav-link">
               <i class="nav-icon fas fa-image"></i>
               <p>
-                Banners
+                Банери
               </p>
             </a>
           </li>
@@ -882,10 +882,10 @@
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2022 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+    <strong>KinoCMS &copy; 2022.</strong>
     Всі права захищено.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.2.0
+      <b>Version</b> 0.2.0
     </div>
   </footer>
 
@@ -897,8 +897,7 @@
 </div>
 <!-- ./wrapper -->
 
-<!--Add form from formset to Moviepage-->
-<script src="{% static 'adminapp/js/add_form.js' %}"></script>
+
 <!-- jQuery -->
 <script src="{% static 'adminapp/plugins/jquery/jquery.min.js' %}"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -916,6 +915,7 @@
 <!-- JQVMap -->
 <script src="{% static 'adminapp/plugins/jqvmap/jquery.vmap.min.js' %}"></script>
 <script src="{% static 'adminapp/plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+<script src="{% static 'adminapp/plugins/jquery-validation/jquery.validate.min.js' %}"></script>
 <!-- jQuery Knob Chart -->
 <script src="{% static 'adminapp/plugins/jquery-knob/jquery.knob.min.js' %}"></script>
 <!-- daterangepicker -->
@@ -934,6 +934,21 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{% static 'adminapp/dist/js/pages/dashboard.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.38.0/js/tempusdominus-bootstrap-4.min.js" crossorigin="anonymous"></script>
+<script src="{% static 'adminapp/js/base_func.js' %}"></script>
 
+{% block script %}
+
+{% endblock %}
+
+<script>
+    function fadeOut() {
+        $(".fadeout").fadeToggle(500, "swing", function () {
+            this.remove();
+        });
+    }
+
+    var delay = 3000;
+    setTimeout(fadeOut, delay);
+</script>
 </body>
 </html>

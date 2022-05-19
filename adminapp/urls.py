@@ -14,7 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.urls import path
+from django.urls import path, re_path
+from django.conf.urls.i18n import i18n_patterns
 from .views import *
 
 urlpatterns = [
@@ -22,12 +23,22 @@ urlpatterns = [
     path('banners/', banners),
     path('movies/', movies),
     path('cinemas/', cinemas),
+    path('cinemas/cinema_page/', cinema_create, name='cinema-create'),
+    path('cinemas/<int:pk>/cinema_update/', cinema_update, name='cinema-update'),
+    path('cinemas/<int:pk>/cinema_delete/', cinema_delete, name='cinema-delete'),
+    path('cinemas/<int:cinema_pk>/hall_create/', hall_create, name='hall-create'),
+
+    path('cinemas/<int:cinema_pk>/hall_update/<int:pk>/', hall_update, name='hall-update'),
+    path('cinemas/<int:cinema_pk>/hall_delete/<int:pk>/', hall_delete, name='hall-delete'),
+
     path('news/', news),
     path('promotions/', promotions),
-    path('pages/', pages),
+    path('pages/', pages_base),
+    path('pages/pages_base/', pages_create, name='pages-create'),
+    path('pages/<int:pk>/pages_update/', pages_update, name='pages-update'),
+    path('pages/<int:pk>/pages_base_delete/', pages_delete, name='pages-delete'),
     path('mailing/', mailing),
     path('movies/moviepage/', movie_create),
     path('movies/<int:pk>/update/', movie_update, name='movie-update'),
     path('movies/<int:pk>/delete/', movie_delete, name='movie-delete'),
-
 ]

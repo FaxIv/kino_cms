@@ -1,5 +1,5 @@
 {% extends 'adminapp/elements/base.html' %}
-
+{% load static %}
 {% block title %}Сторінка фільму{% endblock %}
 
 {% block content %}
@@ -8,12 +8,49 @@
     .hidden {
         display: none
     }
+
+    .img-field {
+        outline: 1px solid #000;
+    }
+
+    .image-error {
+        list-style-type: none;
+        color: red;
+    }
+
+    .error-image-div {
+        height: 20px;
+        text-align: center;
+    }
+
+    .seo-block-card {
+        margin-top: 30px;
+    }
+
+    .type-checkbox {
+        margin-right: 25px;
+    }
+
+    li {
+        list-style-type: none;
+        color: red;
+    }
+
 </style>
-<div class="card card-primary">
+<div>
     <div class="card-header">
         <h3 class="card-title">Сторінка фільму</h3>
     </div>
-    <form id="form-contain" method="post" enctype="multipart/form-data">
+
+    <div>
+        {% for msg in messages %}
+        <div class="alert alert-warning alert-dismissible fade show" style="margin-top:1%" role="alert">
+            {{ msg }}
+
+        </div>
+        {% endfor %}
+    </div>
+    <form id="form-contain" class="basic-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.gallery }}
         <div class="card-body">
@@ -22,95 +59,174 @@
                 <label>Активна</label>
             </div>
             <div class="form-group">
-                <label>Назва</label>
+                <label>Назва:</label>
                 {{ form.title }}
             </div>
             <div class="form-group">
-                <label>Опис</label>
+                <label>Опис:</label>
                 {{ form.text }}
             </div>
+            <br>
             <div class="form-group">
-                <label>Головне зображення</label>
-                <img src="{{ form.instance.main_image.url }}">
-                {{ form.main_image }}
+                <div id="main_image" class="row align-items-center">
+                    <label style="margin-left:10px;margin-right:1%">Головне зображення:</label>
+                    <img id="id_movie-main_image-card" class="img-field"
+                         src="{{ form.instance.main_image_url }}" width="200" height="100">
+                    <div class="hidden">{{ form.main_image}}</div>
+                    <div class="offset-md-1">
+                        <button id="id_movie-main_image_btn" class="btn btn-block btn-outline-success" type="button">
+                            <span>Завантажити</span>
+                        </button>
+                    </div>
+                    <div class="offset-md-1">
+                        <button id="movie-main_image-clear_id_btn" class="btn btn-block btn-outline-danger"
+                                type="button">
+                            <span>Видалити</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="row offset-1">
+            <br>
+            <div>
                 {{ image_forms.management_form }}
-                <div id="im-form" class="row">
+                <div id="empty-form" class="hidden">
+                    <button id="id_images-__prefix__-btn_del" class="btn btn-tool" type="button"
+                            style="margin-left:85%;position:absolute"
+                            onclick="delete_form(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <img id="id_images-__prefix__-image-card" class="img-field" src="/media/bsimg.jpeg" width="200"
+                         height="100">
+                    <div class="error-image-div"></div>
+                    <div hidden>
+                        {{ image_forms.empty_form}}
+                    </div>
+                    <button style="margin-left:25%;margin-top:5%" id="id_images-__prefix__-image_btn"
+                            class="btn btn-block btn-outline-success col-5"
+                            type="button"
+                            onclick="add_image(this)">
+                        <span>Додати</span>
+                    </button>
+                </div>
+                <div>
+                    <label>Галерея:</label>
+                </div>
+                <div id="im-form" class="row col-md-11">
+                    <label style="margin-bottom:2%; margin-left:1%; margin-right:2%">Розмір: 1000x190</label>
                     {% for form in image_forms %}
-                    <div class="form-group offset-md-2 im-form">
-                        {{ form.as_p }}
+                    <div id="images-__base__" class="form-group col-md-2 im-form">
+                        <button class="btn btn-tool" type="button" style="margin-left:85%;position:absolute"
+                                onclick="delete_form(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <img id="id_images-__base__-image-card" class="img-field" src="{{ form.instance.image_url }}"
+                             width="200" height="100">
+                        <div hidden>
+                            {{ form }}
+                        </div>
+                        <div class="error-image-div"></div>
+                        <button style="margin-left:25%;margin-top:5%"
+                                class="btn btn-block btn-outline-success dz-clickable col-5" type="button"
+                                onclick="add_image(this)">
+                            <span>Додати</span>
+                        </button>
                     </div>
                     {% endfor %}
+                    <div id="im-add-more" class="col-md-2 text-center" style="margin-top:4%;margin-bottom:6%">
+                        <button class="btn btn-success dz-clickable" id="add-more" type="button">
+                            <i class="fas fa-plus"></i>
+                            <span>Додати зображення</span>
+                        </button>
+                    </div>
                 </div>
-                <div id="empty-form" class="hidden">{{ image_forms.empty_form}}</div>
-                <button class="btn btn-secondary" id="add-more" type="button">Додати зображення</button>
             </div>
             <div class="form-group">
-                <label>Посилання на трейлер</label>
+                <label>Посилання на трейлер:</label>
                 {{ form.trailer_url }}
             </div>
             <div class="row">
                 <div class="col-2">
-                    <div class="form-check">
-                        {{ form.flag_3d }}
-                        <label class="form-check-label">3D</label>
-                    </div>
-                    <div class="form-check">
-                        {{ form.flag_2d }}
-                        <label class="form-check-label">2D</label>
-                    </div>
-                    <div class="form-check">
-                        {{ form.flag_imax }}
-                        <label class="form-check-label">IMAX</label>
+                    <label>Тип кіно:</label>
+                    <div class="row" style="margin-left:2px;">
+                        <div class="form-check type-checkbox">
+                            {{ form.flag_3d }}
+                            <label class="form-check-label">3D</label>
+                        </div>
+                        <div class="form-check type-checkbox">
+                            {{ form.flag_2d }}
+                            <label class="form-check-label">2D</label>
+                        </div>
+                        <div class="form-check type-checkbox">
+                            {{ form.flag_imax }}
+                            <label class="form-check-label">IMAX</label>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group col-md-2">
-                    <label>Тривалість</label>
+                    <label>Тривалість:</label>
                     {{ form.duration }}
+                    <span>{{ form.duration.errors }}</span>
                 </div>
-                <div class="form-group offset-md-2">
-                    <label>Початок прокату</label>
-                    {{ form.start_sale }}
-                </div>
-                <div class="form-group offset-1">
-                    <label>Кінець прокату</label>
-                    {{ form.finish_sale }}
+                <div class="date_input offset-md-1">
+                    <div class="row">
+                        <div class="form-group" style=" margin-left:10px;">
+                            <label>Початок прокату:</label>
+                            <input type="date" name="movie-start_sale" value="{{ form.start_sale.value|date:'Y-m-d' }}"
+                                   class="form-control" required="" id="id_movie-start_sale">
+                        </div>
+                        <div class="form-group" style=" margin-left:10px;">
+                            <label>Кінець прокату:</label>
+                            <input type="date" name="movie-finish_sale"
+                                   value="{{ form.finish_sale.value|date:'Y-m-d' }}"
+                                   class="form-control" required="" id="id_movie-finish_sale">
+                        </div>
+                    </div>
+                    <div class="errdiv" style="height:20px;"></div>
                 </div>
             </div>
-            <br>
-            <div class="col-md-8 offset-md-2 card">
+            <div class="col-md-8 offset-md-2 card seo-block-card">
                 <div class="card-header">
                     <h3 class="card-title">SEO блок</h3>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label>URL</label>
+                        <label>URL:</label>
                         {{ form.seo_url }}
                     </div>
                     <div class="form-group">
-                        <label>Title</label>
+                        <label>Title:</label>
                         {{ form.seo_title }}
                     </div>
                     <div class="form-group">
-                        <label>Keywords</label>
+                        <label>Keywords:</label>
                         {{ form.seo_keywords }}
                     </div>
                     <div class="form-group">
-                        <label>Descriptions</label>
+                        <label>Descriptions:</label>
                         {{ form.seo_description }}
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <span>{{ error }}</span>
-            </div>
         </div>
-        <div class="card-footer">
-            <button type="submit" class="btn btn-primary">Зберегти</button>
+        <div class="row card-footer align-items-center">
+            <div class="offset-md-5">
+                <button name="save-button" type="submit" class="btn btn-primary">Зберегти</button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary offset-md-2 base_version"><span>Базова версія</span>
+                </button>
+            </div>
         </div>
     </form>
 </div>
 
+<script>
+
+</script>
+{% endblock %}
+
+{% block script %}
+<!--JS for Moviepage-->
+<script src="{% static 'adminapp/js/add_form.js' %}"></script>
 {% endblock %}
 
