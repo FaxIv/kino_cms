@@ -1,6 +1,7 @@
 {% extends 'adminapp/elements/base.html' %}
 {% load static %}
-{% block title %}Сторінка кінотеатру{% endblock %}
+{% load static i18n %}
+{% block title %}{% trans 'Сторінка кінотеатру' %}{% endblock %}
 
 {% block content %}
 <style>
@@ -42,52 +43,100 @@
     .add-f-btn {
         margin-bottom: 5%;
     }
+
+    .errorlist {
+        margin-top: 5px;
+        list-style-type: none;
+        color: red;
+    }
 </style>
 <div>
-    <div class="card-header">
-        <h3 class="card-title">Сторінка кінотеатру</h3>
-    </div>
-    <div class="fadeout" style="float:right;">
-        {% for msg in messages %}
-        <div class="alert alert-warning alert-dismissible fade show" style="margin-top:1%" role="alert">
-            {{ msg }}
-        </div>
-        {% endfor %}
-    </div>
     <br>
     <form id="main-form-content" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="form-check">
-            {{ form.is_active }}
-            <label>Активна</label>
+        <div>
+            <ul class="nav nav-tabs d-flex" id="custom-content-below-tab" role="tablist">
+                <li style="margin-right: 65%">
+                    <h3>
+                        {% trans 'Сторінка кінотеатру' %}
+                    </h3>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" id="custom-content-below-home-tab" data-toggle="pill"
+                       href="#custom-content-below-home" role="tab" aria-controls="custom-content-below-home"
+                       aria-selected="true">{% trans 'Українська' %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill"
+                       href="#custom-content-below-profile" role="tab" aria-controls="custom-content-below-profile"
+                       aria-selected="false">{% trans 'Російська' %}</a>
+                </li>
+            </ul>
         </div>
         <br>
-        <div class="form-group" style="width:400px">
-            <label>Назва кінотеатра:</label>
-            {{ form.title }}
+        <div class="fadeout">
+            {% for msg in messages %}
+            {% if msg.level_tag == 'error' %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ msg }}
+            </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+                {{ msg }}
+            </div>
+            {% endif %}
+            {% endfor %}
         </div>
-        <div class="form-group">
-            <label>Опис:</label>
-            {{ form.text }}
+        <div class="form-check" style="margin-left: 80%">
+            {{ form.is_active }}
+            <label>{% trans 'Активна' %}</label>
         </div>
-        <div class="form-group">
-            <label>Умови:</label>
-            {{ form.condition }}
+        <div class="tab-content" id="custom-content-below-tabContent">
+            <div class="tab-pane fade active show" id="custom-content-below-home" role="tabpanel"
+                 aria-labelledby="custom-content-below-home-tab">
+                <div class="form-group" style="width:500px">
+                    <label>{% trans 'Назва українською:' %}</label>
+                    {{ form.title_uk}}
+                </div>
+                <div class="form-group">
+                    <label>{% trans 'Опис українською:' %}</label>
+                    {{ form.text_uk }}
+                </div>
+                <div class="form-group">
+                    <label>{% trans 'Умови українською:' %}</label>
+                    {{ form.condition_uk }}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="custom-content-below-profile" role="tabpanel"
+                 aria-labelledby="custom-content-below-profile-tab">
+                <div class="form-group" style="width:500px">
+                    <label>{% trans 'Назва російською:' %}</label>
+                    {{ form.title_ru}}
+                </div>
+                <div class="form-group">
+                    <label>{% trans 'Опис російською:' %}</label>
+                    {{ form.text_ru }}
+                </div>
+                <div class="form-group">
+                    <label>{% trans 'Умови російською:' %}</label>
+                    {{ form.condition_ru }}
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <div id="main_image" class="row align-items-center">
-                <label style="margin-left:10px;width:200px">Логотип:</label>
+                <label style="margin-left:10px;width:200px">{% trans 'Логотип' %}:</label>
                 <img id="id_cinema-main_image-card"
                      src="{{ form.instance.main_image_url }}" class="img-field" alt="main_image" width="200"
                      height="100">
                 <div class="d-flex justify-content-around" style="width:320px;margin:15px">
                     <button id="id_cinema-main_image_btn" class="btn btn-outline-success add-img-btn"
                             type="button">
-                        <span>Завантажити</span>
+                        <span>{% trans 'Завантажити' %}</span>
                     </button>
                     <button id="movie-main_image-clear_id_btn" class="btn btn-outline-danger clear-img-btn"
                             type="button">
-                        <span>Видалити</span>
+                        <span>{% trans 'Видалити' %}</span>
                     </button>
                     <div hidden>{{ form.main_image }}</div>
                 </div>
@@ -95,17 +144,17 @@
         </div>
         <div class="form-group">
             <div id="top_banner_image" class="row align-items-center">
-                <label style="margin-left:10px;width:200px">Фото верхнього банера:</label>
+                <label style="margin-left:10px;width:200px">{% trans 'Фото верхнього банера:' %}</label>
                 <img id="id_cinema-top_banner_image-card" class="img-field"
                      src="{{ form.instance.top_banner_image_url }}" alt="top_banner_image" width="200" height="100">
                 <div class="d-flex justify-content-around" style="width:320px;margin:15px">
                     <button id="cinema-top_banner_image_btn" class="btn btn-outline-success add-img-btn"
                             type="button">
-                        <span>Завантажити</span>
+                        <span>{% trans 'Завантажити' %}</span>
                     </button>
                     <button id="cinema-top_banner_image-clear_id_btn"
                             class="btn btn-outline-danger clear-img-btn" type="button">
-                        <span>Видалити</span>
+                        <span>{% trans 'Видалити' %}</span>
                     </button>
                     <div hidden>{{ form.top_banner_image}}</div>
                 </div>
@@ -119,7 +168,6 @@
                             onclick="deleteImage(this)">
                         <i class="fas fa-times"></i>
                     </button>
-
                     <img id="id_images-__prefix__-image-card" src="/media/bsimg.jpeg" class="img-field" width="200"
                          height="100">
                     <div hidden>{{ image_forms.empty_form}}</div>
@@ -127,15 +175,15 @@
                 <div class="er-im"></div>
                 <button id="id_images-__prefix__-image_btn" class="btn btn-outline-success dz-clickable" type="button"
                         onclick="addImage(this)">
-                    <span>Додати</span>
+                    <span>{% trans 'Додати' %}</span>
                 </button>
             </div>
             <div>
-                <label>Галерея:</label>
+                <label>{% trans 'Галерея:' %}</label>
             </div>
             <div id="im-form" class="row">
                 <div class="d-flex justify-content-center align-items-center" style="width:175px;height:200px;">
-                    <label>Розмір: 1000x190</label>
+                    <label>{% trans 'Розмір: 1000x190' %}</label>
                 </div>
                 {% for form in image_forms %}
                 <div id="images-__base__" class="vis-form d-flex flex-column align-items-center im-form">
@@ -149,14 +197,14 @@
                     </div>
                     <div class="er-im"></div>
                     <button class="btn btn-outline-success dz-clickable" type="button" onclick="addImage(this)">
-                        <span>Додати</span>
+                        <span>{% trans 'Додати' %}</span>
                     </button>
                 </div>
                 {% endfor %}
                 <div id="im-add-more" class="col-md-2 d-flex justify-content-center align-items-center im-add-more">
                     <button class="btn btn-success dz-clickable add-f-btn" id="add-more" type="button">
                         <i class="fas fa-plus"></i>
-                        <span>Додати зображення</span>
+                        <span>{% trans 'Додати зображення' %}</span>
                     </button>
                 </div>
             </div>
@@ -167,14 +215,14 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title"><b>Список кінотеатрів</b></h3>
+                            <h3 class="card-title"><b>{% trans 'Список кінотеатрів' %}</b></h3>
                         </div>
                         <div class="card-body table-responsive p-0">
                             <table class="table table-border">
                                 <thead>
                                 <tr>
-                                    <th>Назва</th>
-                                    <th>Дата створення</th>
+                                    <th>{% trans 'Назва' %}</th>
+                                    <th>{% trans 'Дата створення' %}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -200,37 +248,15 @@
             <a href="{% url 'hall-create' form.instance.id %}">
                 <button style="margin-left:43%;margin-top:1%;margin-bottom:2%"
                         class="btn btn-outline-success dz-clickable" type="button">
-                    <span>Додати зал</span>
+                    <span>{% trans 'Додати зал' %}</span>
                 </button>
             </a>
         </div>
         {% endif %}
-        <div class="col-md-8 offset-md-2 card">
-            <div class="card-header">
-                <h3 class="card-title">SEO блок</h3>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label>URL:</label>
-                    {{ form.seo_url }}
-                </div>
-                <div class="form-group">
-                    <label>Title:</label>
-                    {{ form.seo_title }}
-                </div>
-                <div class="form-group">
-                    <label>Keywords:</label>
-                    {{ form.seo_keywords }}
-                </div>
-                <div class="form-group">
-                    <label>Descriptions:</label>
-                    {{ form.seo_description }}
-                </div>
-            </div>
-        </div>
+        {% include 'adminapp/pages/seo_block.html' %}
         <div>
             <div style="margin-left:45%;">
-                <button name="save-button" type="submit" class="btn btn-primary">Зберегти</button>
+                <button name="save-button" type="submit" class="btn btn-primary">{% trans 'Зберегти' %}</button>
             </div>
         </div>
         <br>

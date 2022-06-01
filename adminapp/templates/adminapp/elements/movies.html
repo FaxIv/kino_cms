@@ -1,6 +1,6 @@
 {% extends 'adminapp/elements/base.html' %}
-
-{% block title %}Фільми{% endblock %}
+{% load static i18n %}
+{% block title %}{% trans 'Фільми' %}{% endblock %}
 
 {% block content %}
 <style>
@@ -19,7 +19,7 @@
         <a href="./moviepage">
             <button class="btn btn-success  fileinput-button dz-clickable" type="button">
                 <i class="fas fa-plus"></i>
-                <span>Додати фільм</span>
+                <span>{% trans 'Додати фільм' %}</span>
             </button>
         </a>
     </div>
@@ -27,7 +27,7 @@
 <br>
 <br>
 {% if current_movies %}
-<div class="col-md-3 offset-md-4" style="margin-bottom:1%"><h2>Список поточних фільмів</h2></div>
+<div class="col-md-3 offset-md-4" style="margin-bottom:1%"><h2>{% trans 'Список поточних фільмів' %}</h2></div>
 <div class="row offset-md-2 col-md-8 align-items-center">
     {% for mv in current_movies %}
     <div class="col-md-3 text-center">
@@ -48,7 +48,7 @@
 {% endif %}
 <br>
 {% if coming_movies %}
-<div class="col-md-5 offset-md-3" style="margin-bottom:1%"><h2>Список фільмів, що скоро вийдуть в прокат</h2></div>
+<div class="col-md-5 offset-md-3" style="margin-bottom:1%"><h2>{% trans 'Список фільмів, що скоро вийдуть в прокат' %}</h2></div>
 <div class="row offset-md-2 col-md-8 align-items-center">
     {% for mv in coming_movies %}
     <div class="col-md-3 text-center">
@@ -60,7 +60,7 @@
         </a>
         <a href="{% url 'movie-delete' mv.id %}">
             <button class="btn btn-primary dz-clickable" type="button">
-                Видалити
+                {% trans 'Видалити' %}
             </button>
         </a>
     </div>

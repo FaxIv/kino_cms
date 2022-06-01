@@ -111,8 +111,10 @@ function formsetAddImageInputChange() {
     let addFormsetImageCard = addFormsetImageInput.parentNode.parentNode.querySelector('img')
     let errorDiv = addFormsetImageCard.parentNode.parentNode.querySelector('.er-im')
 
+    let width = 1000
+    let height = 190
     getImageUrl(addFormsetImageInput, addFormsetImageCard)
-    isValid(errorDiv, addFormsetImageInput)
+    isValid(errorDiv, addFormsetImageInput, width, height)
 }
 
 

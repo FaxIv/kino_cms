@@ -1,0 +1,9 @@
+{% extends 'adminapp/elements/base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Редагувати користувача' %}{% endblock %}
+
+{% block content %}
+    <div>
+    {{ form.as_p }}
+    </div>
+{% endblock %}

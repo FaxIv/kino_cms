@@ -1,0 +1,116 @@
+{% extends 'adminapp/elements/base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Стандартна сторінка' %}{% endblock %}
+
+{% block content %}
+<style>
+
+    .btn-tool {
+        width: 10px;
+        height: 40px;
+    }
+
+    .er-im {
+        height: 35px;
+    }
+
+    .image-error {
+        list-style-type: none;
+        color: red;
+    }
+
+    .add-f-btn {
+        margin-bottom: 5%;
+    }
+
+    .type-checkbox {
+        margin-right: 25px;
+    }
+
+    .errorlist {
+        margin-top: 5px;
+        list-style-type: none;
+        color: red;
+    }
+</style>
+
+<div>
+    <br>
+    <form id="main-form-content" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+            <ul class="nav nav-tabs d-flex" id="custom-content-below-tab" role="tablist">
+                <li style="margin-right: 65%">
+                    <h3>
+                        {% trans 'Головна сторінка' %}
+                    </h3>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" id="custom-content-below-home-tab" data-toggle="pill"
+                       href="#custom-content-below-home" role="tab" aria-controls="custom-content-below-home"
+                       aria-selected="true">{% trans 'Українська' %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill"
+                       href="#custom-content-below-profile" role="tab" aria-controls="custom-content-below-profile"
+                       aria-selected="false">{% trans 'Російська' %}</a>
+                </li>
+            </ul>
+        </div>
+        <br>
+        <div class="fadeout">
+            {% for msg in messages %}
+            {% if msg.level_tag == 'error' %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ msg }}
+            </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+                {{ msg }}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="form-check" style="margin-left: 80%">
+            {{ form.is_active }}
+            <label>{% trans 'Активна' %}</label>
+        </div>
+        <div>
+            <label>{% trans 'Телефони' %}</label>
+            <div class="col-md-3">
+                {{ form.phone_1 }}
+            </div>
+            <br>
+            <div class="col-md-3">
+                {{ form.phone_2 }}
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="tab-content" id="custom-content-below-tabContent">
+            <div class="tab-pane fade active show" id="custom-content-below-home" role="tabpanel"
+                 aria-labelledby="custom-content-below-home-tab">
+                <div class="form-group">
+                    <label>{% trans 'SEO текст українською:' %}</label>
+                    {{ form.main_seo_text_uk }}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="custom-content-below-profile" role="tabpanel"
+                 aria-labelledby="custom-content-below-profile-tab">
+                <div class="form-group">
+                    <label>{% trans 'SEO текст російською:' %}</label>
+                    {{ form.main_seo_text_ru }}
+                </div>
+            </div>
+        </div>
+        <br>
+        {% include 'adminapp/pages/seo_block.html' %}
+        <div>
+            <div style="margin-left:45%;">
+                <button name="save-button" type="submit" class="btn btn-primary">{% trans 'Зберегти' %}</button>
+            </div>
+        </div>
+        <br>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'adminapp/elements/base.html' %}
+{% load static i18n %}
+
+{% block title %}
+{% if article_type == 'news' %}
+{% trans 'Видалити новину' %}
+{% else %}
+{% trans 'Видалити акцію' %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="d-flex justify-content-center align-items-center" style="margin-top:10%">
+    <div class="card" style="width:420px;height:150px">
+        <div class="card-header">
+            {% if article_type == 'news' %}
+            <h3 class="card-title">{% trans 'Ви впевнені що хочете видалити цю новину?' %}</h3>
+            {% else %}
+            <h3 class="card-title">{% trans 'Ви впевнені що хочете видалити цю акцію?' %}</h3>
+            {% endif %}
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="d-flex align-items-center justify-content-around" style="margin-top:30px;">
+                <button type="submit" class="btn btn-danger">Видалити</button>
+                <button type="button" class="btn btn-outline-info" onclick="history.back();">Повернутися</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

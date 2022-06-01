@@ -1,0 +1,74 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Вхід</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.38.0/css/tempusdominus-bootstrap-4.min.css"
+          crossorigin="anonymous"/>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/fontawesome-free/css/all.min.css' %}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet"
+          href="{% static 'adminapp/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/jqvmap/jqvmap.min.css' %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'adminapp/dist/css/adminlte.min.css' %}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+    <!-- Daterange picker -->
+    {#    <link rel="stylesheet" href="{% static 'adminapp/plugins/daterangepicker/daterangepicker.css' %}">#}
+    <!-- summernote -->
+    {#    <link rel="stylesheet" href="{% static 'adminapp/plugins/summernote/summernote-bs4.min.css' %}">#}
+    <style>
+        .logo {
+            height: 75px;
+            width: 100px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="d-flex flex-column align-items-center justify-content-center">
+    <div >
+        <div class="d-flex justify-content-center align-items-center" style="height: 100px">
+            <div style="height: 50px"></div>
+            <img class="logo" src="/media/adminapp/logo/MegaKinoLogo.png">
+            <h1>MegaKino</h1>
+        </div>
+    </div>
+    <div class="card col-md-3">
+        <div class="card-header">
+            <h3>{% trans 'Вхід' %}</h3>
+        </div>
+        <div class="card-body">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="username form-group">
+                    <label>{% trans 'Імʼя користувача' %}</label>
+                    <div>{{ form.username }}</div>
+                </div>
+                <div class="password form-group">
+                    <label>{% trans 'Пароль' %}</label>
+                    <div>{{ form.password }}</div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-outline-success col-md-3">{% trans 'Вхід' %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

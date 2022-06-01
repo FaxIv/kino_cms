@@ -1,6 +1,6 @@
 {% extends 'adminapp/elements/base.html' %}
-
-{% block title %}Сторінка новин{% endblock %}
+{% load static i18n %}
+{% block title %}{% trans 'Сторінка новин' %}{% endblock %}
 
 {% block content %}
 <br>
@@ -13,10 +13,10 @@
         {% endfor %}
     </div>
     <div class="col-md-2 text-center" style="float:right;">
-        <a href="{% url 'pages-create' %}">
+        <a href="{% url 'article-create' 'news' %}">
             <button class="btn btn-success  fileinput-button dz-clickable" type="button">
                 <i class="fas fa-plus"></i>
-                <span>Додати новину</span>
+                <span>{% trans 'Додати новину' %}</span>
             </button>
         </a>
     </div>
@@ -24,26 +24,26 @@
 <br>
 <br>
 <br>
-<div class="d-flex justify-content-center" style="margin-bottom:1%"><h2>Список новин</h2></div>
+<div class="d-flex justify-content-center" style="margin-bottom:1%"><h2>{% trans 'Список новин' %}</h2></div>
 <div class="card-body col-md-10 offset-md-1" style="background:#fff">
     <table class="table table-bordered table-striped">
         <thead>
         <tr>
-            <th style="width:40%">Назва</th>
-            <th>Дата створення</th>
-            <th style="width:10%">Статус</th>
+            <th style="width:40%">{% trans 'Назва' %}</th>
+            <th>{% trans 'Дата створення' %}</th>
+            <th style="width:10%">{% trans 'Статус' %}</th>
             <th style="width:40px"></th>
             <th style="width:40px"></th>
         </tr>
         </thead>
         <tbody>
-        {% for page in pages %}
+        {% for article in news %}
         <tr>
-            <td>{{ page.title }}</td>
-            <td>{{ page.date_created|date:'Y-m-d'}}</td>
-            <td>{{ page.is_active.value }}</td>
-            <td class="edit-page"><a href="{% url 'pages-update' page.id %}"><i class="fas fa-pen"></i></a></td>
-            <td class="delete-pagel"><a href="{% url 'pages-delete' page.id %}"><i class="fas fa-trash"></i></a></td>
+            <td>{{ article.title }}</td>
+            <td>{{ article.date_created|date:'Y-m-d'}}</td>
+            <td>{% if article.is_active %}ON{% else %}OFF{% endif %}</td>
+            <td class="edit-page"><a href="{% url 'article-update' article.article_type article.id %}"><i class="fas fa-pen"></i></a></td>
+            <td class="delete-pagel"><a href="{% url 'article-delete' article.article_type article.id %}"><i class="fas fa-trash"></i></a></td>
         </tr>
         {% endfor %}
         </tbody>

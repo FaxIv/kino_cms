@@ -1,13 +1,8 @@
 # from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+from django.shortcuts import render
 
 
 def index(request):
-    template = loader.get_template('mainapp/main.html')
-    return HttpResponse(template.render())
-
-
-def qwe(request):
-    template = loader.get_template('mainapp/qwe.html')
-    return HttpResponse(template.render())
+    return render(request, 'mainapp/elements/main_page.html')

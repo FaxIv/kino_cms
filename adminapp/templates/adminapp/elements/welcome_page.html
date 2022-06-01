@@ -1,0 +1,18 @@
+{% extends 'adminapp/elements/base.html' %}
+{% load static i18n %}
+{% block title %}MegaKino Admin{% endblock %}
+
+{% block content %}
+    <style>
+        .logo-w_p {
+            width: 300px;
+            height: 250px;
+        }
+    </style>
+
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <div style="height: 50px"></div>
+        <img class="logo-w_p" src="/media/adminapp/logo/MegaKinoLogo.png">
+        <h1>MegaKino ADMIN</h1>
+    </div>
+{% endblock %}

@@ -33,7 +33,7 @@ function isActive(btn, inp) {
 
 
 // Checked image width and height, return error span.
-function isValid(errorBlock, fileInput) {
+function isValid(errorBlock, fileInput, w, h) {
     let _URL = window.URL;
     let file, img;
     if (file = fileInput.files[0]) {
@@ -44,7 +44,7 @@ function isValid(errorBlock, fileInput) {
         }
         img = new Image();
         img.onload = function () {
-            if (this.width != 1000 && this.height != 190) {
+            if (this.width != w && this.height != h) {
                 let span = document.createElement('span');
                 span.setAttribute('class', 'image-error');
                 span.innerHTML = 'Невірні розміри';

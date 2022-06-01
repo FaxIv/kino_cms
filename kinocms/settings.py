@@ -38,6 +38,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -73,6 +74,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -117,16 +119,29 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'users.NewUser'
+AUTH_USER_MODEL = 'users.SiteUser'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 LANGUAGE_CODE = 'uk'
 
+
 TIME_ZONE = 'Europe/Kiev'
 USE_L10N = True
 USE_I18N = True
+
+gettext = lambda s: s
+LANGUAGES = (
+    ('uk', gettext('Ukrainian')),
+    ('ru', gettext('Russian')),
+)
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
+MODELTRANSLATION_PREPOPULATE_LANGUAGE = 'uk'
 
 DATE_INPUT_FORMATS = ('%d-%m-%Y', '%Y-%m-%d')
 

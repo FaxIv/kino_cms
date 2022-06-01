@@ -1,6 +1,7 @@
 {% extends 'adminapp/elements/base.html' %}
 {% load static %}
-{% block title %}Сторінка залу{% endblock %}
+{% load static i18n %}
+{% block title %}{% trans 'Сторінка залу' %}{% endblock %}
 
 {% block content %}
 <style>
@@ -38,36 +39,78 @@
     .type-checkbox {
         margin-right: 25px;
     }
+
+    .errorlist {
+        margin-top: 5px;
+        list-style-type: none;
+        color: red;
+    }
 </style>
 
 <div>
-    <div class="card-header">
-        <h3 class="card-title">Сторінка кінотеатру</h3>
-    </div>
-    <div class="fadeout" style="float:right;">
-        {% for msg in messages %}
-        <div class="alert alert-warning alert-dismissible fade show" style="margin-top:1%" role="alert">
-            {{ msg }}
-        </div>
-        {% endfor %}
-    </div>
     <br>
     <form id="main-form-content" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.gallery }}
-        {{ form.cinema }}
-        <div class="form-check">
-            {{ form.is_active }}
-            <label>Активна</label>
+        <div>
+            <ul class="nav nav-tabs d-flex" id="custom-content-below-tab" role="tablist">
+                <li style="margin-right: 65%">
+                    <h3>
+                        {% trans 'Сторінка' %}
+                    </h3>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" id="custom-content-below-home-tab" data-toggle="pill"
+                       href="#custom-content-below-home" role="tab" aria-controls="custom-content-below-home"
+                       aria-selected="true">{% trans 'Українська' %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill"
+                       href="#custom-content-below-profile" role="tab" aria-controls="custom-content-below-profile"
+                       aria-selected="false">{% trans 'Російська' %}</a>
+                </li>
+            </ul>
         </div>
         <br>
-        <div class="form-group" style="width:350px">
-            <label>Номер залу:</label>
-            {{ form.title }}
+        <div class="fadeout">
+            {% for msg in messages %}
+            {% if msg.level_tag == 'error' %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ msg }}
+            </div>
+            {% else %}
+            <div class="alert alert-success" role="alert">
+                {{ msg }}
+            </div>
+            {% endif %}
+            {% endfor %}
         </div>
-        <div class="form-group">
-            <label>Опис:</label>
-            {{ form.text }}
+        <div class="form-check" style="margin-left: 80%">
+            {{ form.is_active }}
+            <label>{% trans 'Активна' %}</label>
+        </div>
+        <div class="tab-content" id="custom-content-below-tabContent">
+            <div class="tab-pane fade active show" id="custom-content-below-home" role="tabpanel"
+                 aria-labelledby="custom-content-below-home-tab">
+                <div class="form-group" style="width:500px">
+                    <label>{% trans 'Назва залу українською:' %}</label>
+                    {{ form.title_uk}}
+                </div>
+                <div class="form-group">
+                    <label>{% trans 'Опис залу українською:' %}</label>
+                    {{ form.text_uk }}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="custom-content-below-profile" role="tabpanel"
+                 aria-labelledby="custom-content-below-profile-tab">
+                <div class="form-group" style="width:500px">
+                    <label>{% trans 'Назва залу російською:' %}</label>
+                    {{ form.title_ru}}
+                </div>
+                <div class="form-group">
+                    <label>{% trans 'Опис залу російською:' %}</label>
+                    {{ form.text_ru }}
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <div id="main_image" class="row align-items-center">
@@ -96,7 +139,8 @@
                         <i class="fas fa-times"></i>
                     </button>
 
-                    <img id="id_images-__prefix__-image-card" class="img-field" src="/media/bsimg.jpeg" width="200" height="100">
+                    <img id="id_images-__prefix__-image-card" class="img-field" src="/media/bsimg.jpeg" width="200"
+                         height="100">
                     <div hidden>{{ image_forms.empty_form}}</div>
                 </div>
                 <div class="er-im"></div>
@@ -118,7 +162,8 @@
                         <button class="btn btn-tool" type="button" onclick="deleteImage(this)">
                             <i class="fas fa-times"></i>
                         </button>
-                        <img id="id_images-__base__-image-card" class="img-field" src="{{ form.instance.image_url }}" width="200" height="100">
+                        <img id="id_images-__base__-image-card" class="img-field" src="{{ form.instance.image_url }}"
+                             width="200" height="100">
                         <div hidden>{{ form }}</div>
                     </div>
                     <div class="er-im"></div>
@@ -167,29 +212,7 @@
                 <div class="errdiv" style="height:20px;"></div>
             </div>
         </div>
-        <div class="col-md-8 offset-md-2 card">
-            <div class="card-header">
-                <h3 class="card-title">SEO блок</h3>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label>URL:</label>
-                    {{ form.seo_url }}
-                </div>
-                <div class="form-group">
-                    <label>Title:</label>
-                    {{ form.seo_title }}
-                </div>
-                <div class="form-group">
-                    <label>Keywords:</label>
-                    {{ form.seo_keywords }}
-                </div>
-                <div class="form-group">
-                    <label>Descriptions:</label>
-                    {{ form.seo_description }}
-                </div>
-            </div>
-        </div>
+            {% include 'adminapp/pages/seo_block.html' %}
         <div>
             <div style="margin-left:45%;">
                 <button name="save-button" type="submit" class="btn btn-primary">Зберегти</button>

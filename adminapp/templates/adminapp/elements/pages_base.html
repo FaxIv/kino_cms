@@ -1,6 +1,6 @@
 {% extends 'adminapp/elements/base.html' %}
-
-{% block title %}Сторінки сайту{% endblock %}
+{% load static i18n %}
+{% block title %}{% trans 'Сторінки сайту' %}{% endblock %}
 
 {% block content %}
 <br>
@@ -16,7 +16,7 @@
         <a href="{% url 'pages-create' %}">
             <button class="btn btn-success  fileinput-button dz-clickable" type="button">
                 <i class="fas fa-plus"></i>
-                <span>Додати сторінку</span>
+                <span>{% trans 'Додати сторінку' %}</span>
             </button>
         </a>
     </div>
@@ -24,27 +24,94 @@
 <br>
 <br>
 <br>
-<div class="d-flex justify-content-center" style="margin-bottom:1%"><h2>Список базових сторінок сайту</h2></div>
+<div class="d-flex justify-content-center" style="margin-bottom:1%"><h2>{% trans 'Список базових сторінок сайту' %}</h2></div>
 <div class="card-body col-md-10 offset-md-1" style="background:#fff">
     <table class="table table-bordered table-striped">
         <thead>
         <tr>
-            <th style="width:40%">Назва</th>
-            <th>Дата створення</th>
-            <th style="width:10%">Статус</th>
+            <th style="width:40%">{% trans 'Назва' %}</th>
+            <th>{% trans 'Дата створення' %}</th>
+            <th style="width:10%">{% trans 'Статус' %}</th>
             <th style="width:40px"></th>
             <th style="width:40px"></th>
         </tr>
         </thead>
         <tbody>
+        <tr>
+            <td>{% trans 'Головна сторінка' %}</td>
+            <td>{{ main_page.date_created|date:'Y-m-d' }}</td>
+            <td>{% if main_page.is_active %}ON{% else %}OFF{% endif %}</td>
+            <td class="edit-page"><a href="{% url 'main-page-update' %}"><i class="fas fa-pen"></i></a></td>
+            <td class="delete-page"></td>
+        </tr>
         {% for page in pages %}
+        {% if page.type == 'about_cinema'%}
+        <tr>
+            <td>{% trans 'Про кінотеатр' %}</td>
+            <td>{{ page.date_created|date:'Y-m-d' }}</td>
+            <td>{% if page.is_active %}ON{% else %}OFF{% endif %}</td>
+            <td class="edit-page"><a href="{% url 'pages-update' page.id %}"><i class="fas fa-pen"></i></a></td>
+            <td class="delete-page"></td>
+        </tr>
+        {% endif %}
+        {% if page.type == 'cafe'%}
+        <tr>
+            <td>{% trans 'Кафе-Бар' %}</td>
+            <td>{{ page.date_created|date:'Y-m-d' }}</td>
+            <td>{% if page.is_active %}ON{% else %}OFF{% endif %}</td>
+            <td class="edit-page"><a href="{% url 'pages-update' page.id %}"><i class="fas fa-pen"></i></a></td>
+            <td class="delete-page"></td>
+        </tr>
+        {% endif %}
+        {% if page.type == 'vip_hall'%}
+        <tr>
+            <td>{% trans 'Vip-зал' %}</td>
+            <td>{{ page.date_created|date:'Y-m-d' }}</td>
+            <td>{% if page.is_active %}ON{% else %}OFF{% endif %}</td>
+            <td class="edit-page"><a href="{% url 'pages-update' page.id %}"><i class="fas fa-pen"></i></a></td>
+            <td class="delete-page"></td>
+        </tr>
+        {% endif %}
+        {% if page.type == 'advertising'%}
+        <tr>
+            <td>{% trans 'Реклама' %}</td>
+            <td>{{ page.date_created|date:'Y-m-d' }}</td>
+            <td>{% if page.is_active %}ON{% else %}OFF{% endif %}</td>
+            <td class="edit-page"><a href="{% url 'pages-update' page.id %}"><i class="fas fa-pen"></i></a></td>
+            <td class="delete-page"></td>
+        </tr>
+        {% endif %}
+        {% if page.type == 'children_room'%}
+        <tr>
+            <td>{% trans 'Дитяча кімната' %}</td>
+            <td>{{ page.date_created|date:'Y-m-d' }}</td>
+            <td>{% if page.is_active %}ON{% else %}OFF{% endif %}</td>
+            <td class="edit-page"><a href="{% url 'pages-update' page.id %}"><i class="fas fa-pen"></i></a></td>
+            <td class="delete-page"></td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        <tr>
+            <td>{% trans 'Контакти' %}</td>
+            <td>{{ contacts.date_created|date:'Y-m-d' }}</td>
+            <td>{% if contacts_active %}ON{% else %}OFF{% endif %}</td>
+            <td class="edit-page"><a href="{% url 'cinema-contacts-update' %}"><i class="fas fa-pen"></i></a></td>
+            <td class="delete-page"></td>
+        </tr>
+        {% for page in pages %}
+        {% if page.type == 'other_page' %}
         <tr>
             <td>{{ page.title }}</td>
             <td>{{ page.date_created|date:'Y-m-d'}}</td>
-            <td>{{ page.is_active.value }}</td>
+            <td>{% if page.is_active %}ON{% else %}OFF{% endif %}</td>
             <td class="edit-page"><a href="{% url 'pages-update' page.id %}"><i class="fas fa-pen"></i></a></td>
-            <td class="delete-pagel"><a href="{% url 'pages-delete' page.id %}"><i class="fas fa-trash"></i></a></td>
+            {% if page.non_delete_page %}
+            <td class="delete-page"></td>
+            {% else %}
+            <td class="delete-page"><a href="{% url 'pages-delete' page.id %}"><i class="fas fa-trash"></i></a></td>
+            {% endif %}
         </tr>
+        {% endif %}
         {% endfor %}
         </tbody>
     </table>

@@ -1,5 +1,5 @@
 from django.db import models
-from django.template.defaultfilters import date
+from datetime import datetime
 
 
 class Gallery(models.Model):
@@ -23,18 +23,22 @@ class Image(models.Model):
         verbose_name = 'Image'
 
 
+class SeoBlock(models.Model):
+    seo_url = models.URLField(null=True, blank=True)
+    seo_title = models.CharField(max_length=100, null=True, blank=True)
+    seo_keywords = models.TextField(null=True, blank=True)
+    seo_description = models.TextField(null=True, blank=True)
+
+
 class AbstractPage(models.Model):
     is_active = models.BooleanField()
     title = models.CharField(max_length=50)
     text = models.TextField()
     main_image = models.ImageField(null=True, blank=True)
-    seo_url = models.URLField()
-    seo_title = models.CharField(max_length=50)
-    seo_keywords = models.TextField()
-    seo_description = models.TextField()
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     gallery = models.ForeignKey(Gallery, on_delete=models.CASCADE, null=True, blank=True)
+    seo_block = models.ForeignKey(SeoBlock, on_delete=models.SET_NULL, null=True, blank=True)
 
     @property
     def main_image_url(self):
@@ -46,8 +50,7 @@ class AbstractPage(models.Model):
     class Meta:
         abstract = True
 
-    def __str__(self):
-        return self.title
+
 
 
 class AbstractProperties(models.Model):
@@ -59,14 +62,61 @@ class AbstractProperties(models.Model):
         abstract = True
 
 
-# Base pages site (about, cafe, children's room, VIP hall, advertising).
-
-class BaseSitePage(AbstractPage):
-    type = models.CharField(max_length=20, null=True, blank=True)
+# region banners
+class BaseBannerModel(models.Model):
+    banner_image = models.CharField()
 
     class Meta:
-        verbose_name_plural = 'Base pages'
-        verbose_name = 'Base page'
+        abstract = True
+
+    @property
+    def banner_storage_url(self):
+        if self.banner_image and hasattr(self.banner_image, 'url'):
+            return self.banner_image.url
+        else:
+            return "/media/bsimg.jpeg"
+
+
+class MainTopBanners(BaseBannerModel):
+    banner_image = models.ImageField(upload_to='main/banners/top/', null=True, blank=True)
+    banner_url = models.URLField(null=True, blank=True)
+    banner_text = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Top banners on main page'
+        verbose_name = 'Top banner'
+
+
+class BackgroundBanner(BaseBannerModel):
+    banner_image = models.ImageField(upload_to='main/banners/background/', null=True, blank=True)
+    background_or_banner = models.CharField(max_length=20)
+
+    class Meta:
+        verbose_name_plural = 'Background banner'
+        verbose_name = 'Background banner'
+
+
+class MainNewsAndPromotionsBanners(BaseBannerModel):
+    banner_image = models.ImageField(upload_to='main/banners/news_and_promotions/', null=True, blank=True)
+    banner_url = models.URLField(null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'News and promotions banners'
+        verbose_name = 'News/promotion banner'
+
+
+class BannersSettings(models.Model):
+    is_active_top_banner = models.BooleanField(default=False)
+    speed_top_banner = models.PositiveSmallIntegerField(default=5)
+    is_active_news_and_promotion = models.BooleanField(default=False)
+    speed_news_and_promotion = models.PositiveSmallIntegerField(default=5)
+
+    class Meta:
+        verbose_name_plural = 'Banners page settings'
+        verbose_name = 'Banners page setting'
+
+
+# endregion banners
 
 
 # Models for all movies.
@@ -128,10 +178,61 @@ class Session(AbstractProperties):
 
 # Models for news page and promotions page
 
-class Articles(BaseSitePage):
+class Articles(AbstractPage):
+    article_type = models.CharField(max_length=20, null=True, blank=True)
     video_url = models.URLField(verbose_name='Video')
-    date_publication = models.DateTimeField()
+    date_publication = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'News and promotions'
-        verbose_name = 'News and promotion'
+        verbose_name = 'News and promotions'
+
+
+# region base_pages
+# Base pages site (about, cafe, children's room, VIP hall, advertising).
+class MainPage(models.Model):
+    is_active = models.BooleanField(default=False)
+    phone_1 = models.CharField(max_length=25)
+    phone_2 = models.CharField(max_length=25, null=True, blank=True)
+    main_seo_text = models.TextField()
+    seo_block = models.ForeignKey(SeoBlock, on_delete=models.SET_NULL, null=True, blank=True)
+    date_created = models.DateField(auto_now_add=True)
+    date_updated = models.DateField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = 'Main page'
+        verbose_name = 'Main page'
+
+
+class SitePage(AbstractPage):
+    non_delete_page = models.BooleanField(default=False)
+    type = models.CharField(max_length=30, default='other_page', null=True, blank=True)
+    seo_block = models.ForeignKey(SeoBlock, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Base pages'
+        verbose_name = 'Base page'
+
+
+class CinemaContacts(models.Model):
+    is_active = models.BooleanField(default=False)
+    title = models.CharField(max_length=100)
+    address = models.CharField(max_length=150)
+    coordinates = models.CharField(max_length=100)
+    logo = models.ImageField(null=True, blank=True)
+    seo_block = models.ForeignKey(SeoBlock, on_delete=models.SET_NULL, null=True, blank=True)
+    date_created = models.DateField(auto_now_add=True)
+
+    @property
+    def logo_url(self):
+        if self.logo and hasattr(self.logo, 'url'):
+            return self.logo.url
+        else:
+            return "/media/bsimg.jpeg"
+
+    class Meta:
+        verbose_name_plural = 'Cinemas contacts'
+        verbose_name = 'Cinema contacts'
+
+
+# endregion

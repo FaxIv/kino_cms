@@ -1,7 +1,279 @@
 {% extends 'adminapp/elements/base.html' %}
 
-{% block title %}Banners{% endblock %}
+{% load static i18n %}
+{% block title %}{% trans 'Банера' %}{% endblock %}
 
 {% block content %}
-  <h1>Work Banners</h1>
+<style>
+    .hidden {
+        display: none
+    }
+
+    .border {
+        margin-bottom: 20px;
+        padding: 20px;
+        border-radius: 30px;
+    }
+
+    .img-field {
+        width: 220px;
+        height: 110px;
+        outline: 1px solid #000;
+    }
+
+    .btn-tool {
+        width: 10px;
+        height: 40px;
+    }
+
+    .top-bn-form {
+        width: 320px;
+    }
+
+    .col-form-label {
+        margin-right: 10px;
+    }
+
+    .add-formset-btn-div {
+        height: 350px;
+    }
+
+    .err-div {
+        margin-top: 5px;
+        height: 20px;
+        color: red;
+    }
+</style>
+<div class="fadeout">
+    {% for msg in messages %}
+    {% if msg.level_tag == 'error' %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ msg }}
+    </div>
+    {% else %}
+    <div class="alert alert-success" role="alert">
+        {{ msg }}
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+<br>
+<div>
+    <div class="d-flex justify-content-center">
+        <h3>{% trans 'На головній зверху' %}</h3>
+    </div>
+</div>
+<div>
+    <form id="top_main_banners" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="border border-dark">
+            <div class="form-group row d-flex justify-content-between">
+                <div style="margin-left: 10px">
+                    <p>{% trans 'Розмір: 1000х190' %}</p>
+                </div>
+                <div class="form-group row col-sm-2">
+                    <label class="form-check-label"><b>{% trans 'Активна' %}</b></label>
+                    <div class="" style="margin-left: 30px">{{ settings.is_active_top_banner }}</div>
+                </div>
+            </div>
+            <div class="row top_banner">
+                {{ top_banners_forms.management_form }}
+
+                <!--   empty form top banners formset -->
+                <div hidden class="empty-form ">
+                    <button data-target_input="top_banner-__prefix__" class="btn btn-tool" type="button"
+                            onclick="deleteBannerForm(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="d-flex flex-column align-items-center">
+                        <img class="img-field" id="id_top_banner-__prefix__-banner_image-card"
+                             src="{{ top_banners_forms.empty_form.instance.banner_storage_url }}" alt="main_top_banner">
+                        <div class="err-div"></div>
+                        <button class="btn btn-outline-success" data-parent_id="top_banner-__prefix__-banner"
+                                type="button" onclick="addBanner(this)" style="margin: 15px;">{% trans 'Додати' %}
+                        </button>
+                        <div hidden>{{ top_banners_forms.empty_form.banner_image }}</div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label">URL:</label>
+                        <div>{{ top_banners_forms.empty_form.banner_url }}</div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label">Текст:</label>
+                        <div>{{ top_banners_forms.empty_form.banner_text }}</div>
+                    </div>
+                    <div hidden>{{ top_banners_forms.empty_form.DELETE }}</div>
+                    <div class="form_id">{{ top_banners_forms.empty_form.id }}</div>
+                </div>
+
+                <!-- banners initial forms -->
+                {% for form in top_banners_forms %}
+                <div class="top-bn-form d-flex flex-column align-items-end">
+                    <button data-target_input="top_banner-__base__" class="btn btn-tool" type="button"
+                            onclick="deleteBannerForm(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="d-flex flex-column align-items-center">
+                        <img class="img-field" id="id_top_banner-__base__-banner_image-card"
+                             src="{{ form.instance.banner_storage_url }}" alt="main_top_banner">
+                        <div class="err-div"></div>
+                        <button class="btn btn-outline-success add-bn-im-btn"
+                                data-parent_id="top_banner-__base__-banner" type="button" onclick="addBanner(this)"
+                                style="margin: 15px;">{% trans 'Додати' %}
+                        </button>
+                        <div hidden>{{ form.banner_image }}</div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label">URL:</label>
+                        <div>{{ form.banner_url }}</div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label">Текст:</label>
+                        <div>{{ form.banner_text }}</div>
+                    </div>
+                    <div hidden>{{ form.DELETE }}</div>
+                    <div class="form_id">{{ form.id }}</div>
+                </div>
+                {% endfor %}
+                <div class="d-flex justify-content-center align-items-center col-md-3 add-formset-btn-div">
+                    <button type="button" class="btn btn-outline-success add-formset" data-target_form="top_banner">
+                        {% trans 'Додати зображення'%}
+                    </button>
+                </div>
+            </div>
+            <br>
+            <div class="d-flex row">
+                <div class="d-flex justify-content-center align-items-center col-md-4" style="margin-bottom: 10px;">
+                    <label>{% trans 'Швидкість обертання' %}</label>
+                    <div style="margin-left: 10px">
+                        {{ settings.speed_top_banner }}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center col-md-4" style="margin-bottom: 10px;">
+                    <button name="save-button" type="submit" value="top-banner-save" class="btn btn-outline-success">
+                        {% trans 'Зберегти' %}
+                    </button>
+                </div>
+                <div class="col-md-4" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+
+        <br>
+        <div>
+            <div class="d-flex justify-content-center">
+                <h3>{% trans 'Банер на задньому фоні' %}</h3>
+            </div>
+            <div class="border border-dark">
+                <div>
+                    {{ background.banner_image }}
+                    {{ background.background_or_banner }}
+                </div>
+                background_banners
+                <div class="d-flex justify-content-center">
+                    <button name="save-button" type="submit" value="background-save"
+                            class="btn btn-outline-success">{% trans 'Зберегти' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div>
+            <div class="d-flex justify-content-center">
+                <h3>{% trans 'На головній Новини/Акції' %}</h3>
+            </div>
+            <div class="border border-dark">
+                <div class="form-group row d-flex justify-content-between">
+                    <div style="margin-left: 10px">
+                        <p>{% trans 'Розмір: 1000х190' %}</p>
+                    </div>
+                    <div class="form-group row col-sm-2">
+                        <label class="form-check-label"><b>{% trans 'Активна' %}</b></label>
+                        <div class="" style="margin-left: 30px">{{ settings.is_active_news_and_promotion }}</div>
+                    </div>
+                </div>
+                <div class="row top_banner">
+                    {{ news_promotions.management_form }}
+
+                    <!--   empty form top banners formset -->
+                    <div hidden class="empty-form ">
+                        <button data-target_input="_____-__prefix__" class="btn btn-tool" type="button"
+                                onclick="deleteBannerForm(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="d-flex flex-column align-items-center">
+                            <img class="img-field" id="id______-__prefix__-banner_image-card"
+                                 src="{{ news_promotions.empty_form.instance.banner_storage_url }}"
+                                 alt="main_top_banner">
+                            <div class="err-div"></div>
+                            <button class="btn btn-outline-success" data-parent_id="_____-__prefix__-banner"
+                                    type="button" onclick="addBanner(this)" style="margin: 15px;">{% trans 'Додати'
+                                %}
+                            </button>
+                            <div hidden>{{ news_promotions.empty_form.banner_image }}</div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label">URL:</label>
+                            <div>{{ news_promotions.empty_form.banner_url }}</div>
+                        </div>
+                        <div hidden>{{ news_promotions.empty_form.DELETE }}</div>
+                        <div class="form_id">{{ news_promotions.empty_form.id }}</div>
+                    </div>
+
+                    <!-- banners initial forms -->
+                    {% for form in news_promotions %}
+                    <div class="top-bn-form d-flex flex-column align-items-end">
+                        <button data-target_input="_____-__base__" class="btn btn-tool" type="button"
+                                onclick="deleteBannerForm(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <div class="d-flex flex-column align-items-center">
+                            <img class="img-field" id="id______-__base__-banner_image-card"
+                                 src="{{ form.instance.banner_storage_url }}" alt="main_top_banner">
+                            <div class="err-div"></div>
+                            <button class="btn btn-outline-success add-bn-im-btn"
+                                    data-parent_id="_____-__base__-banner" type="button" onclick="addBanner(this)"
+                                    style="margin: 15px;">{% trans 'Додати' %}
+                            </button>
+                            <div hidden>{{ form.banner_image }}</div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label">URL:</label>
+                            <div>{{ form.banner_url }}</div>
+                        </div>
+                        <div hidden>{{ form.DELETE }}</div>
+                        <div class="form_id">{{ form.id }}</div>
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex justify-content-center align-items-center col-md-3 add-formset-btn-div">
+                        <button type="button" class="btn btn-outline-success add-formset"
+                                data-target_form="top_banner">{% trans 'Додати зображення'%}
+                        </button>
+                    </div>
+                </div>
+                <br>
+                <div class="d-flex row">
+                    <div class="d-flex justify-content-center align-items-center col-md-4"
+                         style="margin-bottom: 10px;">
+                        <label>{% trans 'Швидкість обертання' %}</label>
+                        <div style="margin-left: 10px">
+                            {{ settings.speed_news_and_promotion }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center col-md-4" style="margin-bottom: 10px;">
+                        <button name="save-button" type="submit" value="news-promotions-save"
+                                class="btn btn-outline-success">{% trans 'Зберегти' %}
+                        </button>
+                    </div>
+                    <div class="col-md-4" style="margin-top: 10px;"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+{% block script %}
+<!--JS for Cinemapage-->
+<script src="{% static 'adminapp/js/banners_page.js' %}"></script>
 {% endblock %}

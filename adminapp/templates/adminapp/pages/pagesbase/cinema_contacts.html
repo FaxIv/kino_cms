@@ -1,0 +1,176 @@
+{% extends 'adminapp/elements/base.html' %}
+{% load static i18n %}
+{% block title %}{% trans 'Стандартна сторінка' %}{% endblock %}
+
+{% block content %}
+    <style>
+        .hidden {
+            display: none
+        }
+
+        .cont-form {
+            margin-bottom: 20px;
+            padding: 30px;
+            border-radius: 30px;
+        }
+
+        .img-card {
+            width: 200px;
+            height: 100px;
+            outline: 1px solid #000;
+        }
+
+        .error-div {
+            height: 8px;
+            margin-top: 4px;
+            text-align: center;
+            color: red;
+        }
+
+        .add_cont {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+
+    <div>
+        <br>
+        <form id="cinema-contact-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ contact_forms.management_form }}
+            <div class="empty-form hidden">
+                {{ contact_forms.empty_form.id }}
+                <div class="form-group row d-flex justify-content-between" style="margin-bottom: 25px;">
+                    <div class="form-group row col-md-6">
+                        <label class="col-form-label">{% trans 'Назва кінотеатру:' %}</label>
+                        <div class="col-sm-8">{{ contact_forms.empty_form.title }}</div>
+                    </div>
+                    <div class="form-group row col-md-2">
+                        <label class="form-check-label"><b>{% trans 'Активна' %}</b></label>
+                        <div class="" style="margin-left: 30px">{{ contact_forms.empty_form.is_active }}</div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label">{% trans 'Адреса:' %}</label>
+                    <div class="col-sm-11">{{ contact_forms.empty_form.address }}</div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <label class="col-form-label">{% trans 'Координати для карти:' %}</label>
+                    <div class="col-sm-6">{{ contact_forms.empty_form.coordinates }}</div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <div id="id_contact-__prefix__-logo_row" class="row align-items-center">
+                        <label class="" style="margin-left:10px;width:150px">{% trans 'Лого' %}:</label>
+                        <div>
+                            <img id="id_contact-__prefix__-logo-card"
+                                 src="{{ contact_forms.empty_form.instance.logo_url }}"
+                                 class="img-card" alt="cinema_logo">
+                            <div class="error-div"></div>
+                        </div>
+                        <div class="d-flex justify-content-around" style="width:320px;margin:15px">
+                            <button id="id_contact-__prefix__-logo_add_btn" data-parent_id="contact-__prefix__-logo"
+                                    onclick="addLogo(this)" class="btn btn-outline-success add-img-btn" type="button">
+                                <span>{% trans 'Завантажити' %}</span>
+                            </button>
+                            <button id="id_contact-__prefix__-logo-clear_btn" data-parent_id="contact-__prefix__-logo"
+                                    onclick="clearLogo(this)" class="btn btn-outline-danger clear-img-btn"
+                                    type="button" disabled="true">
+                                <span>{% trans 'Видалити' %}</span>
+                            </button>
+                            <div hidden>{{ contact_forms.empty_form.logo }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end aling-items-center" style="margin-top: 15px;">
+                    <button type="button" class="btn btn-outline-danger" onclick="deleteForm(this)">
+                        {% trans 'Видалити кінотеатр' %}
+                    </button>
+                    <div hidden>{{ form.DELETE }}</div>
+                </div>
+            </div>
+            <div class="all-cont-forms">
+                {% for form in contact_forms %}
+                    <div class="cont-form border border-dark">
+                        {{ form.id }}
+                        <div class="form-group row d-flex justify-content-between" style="margin-bottom: 25px;">
+                            <div class="form-group row col-md-6">
+                                <label class="col-form-label">{% trans 'Назва кінотеатру:' %}</label>
+                                <div class="col-sm-8">{{ form.title }}</div>
+                            </div>
+                            <div class="form-group row col-md-2">
+                                <label class="form-check-label"><b>{% trans 'Активна' %}</b></label>
+                                <div class="" style="margin-left: 30px">{{ form.is_active }}</div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label">{% trans 'Адреса:' %}</label>
+                            <div class="col-sm-11">{{ form.address }}</div>
+                        </div>
+                        <br>
+                        <div class="form-group row">
+                            <label class="col-form-label">{% trans 'Координати для карти:' %}</label>
+                            <div class="col-sm-6">{{ form.coordinates }}</div>
+                        </div>
+                        <br>
+                        <div class="form-group row">
+                            <div id="id_contact-__base__-logo_row" class="row align-items-center">
+                                <label class="" style="margin-left:10px;width:150px">{% trans 'Лого' %}:</label>
+                                <div>
+                                    <img id="id_contact-__base__-logo-card" src="{{ form.instance.logo_url }}"
+                                         class="img-card"
+                                         alt="cinema_logo">
+                                    <div class="error-div"></div>
+                                </div>
+                                <div class="d-flex justify-content-around" style="width:320px;margin:15px">
+                                    <button id="id_contact-__base__-logo_add_btn" data-parent_id="contact-__base__-logo"
+                                            onclick="addLogo(this)" class="btn btn-outline-success add-img-btn"
+                                            type="button">
+                                        <span>{% trans 'Завантажити' %}</span>
+                                    </button>
+                                    <button id="id_contact-__base__-logo-clear_btn"
+                                            data-parent_id="contact-__base__-logo" onclick="clearLogo(this)"
+                                            class="btn btn-outline-danger clear-img-btn" type="button">
+                                        <span>{% trans 'Видалити' %}</span>
+                                    </button>
+                                    <div hidden>{{ form.logo }}</div>
+                                </div>
+                                <div class="error-div"></div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-end aling-items-center">
+                            <button type="button" class="btn btn-outline-danger" onclick="deleteForm(this)">
+                                {% trans 'Видалити кінотеатр' %}
+                            </button>
+                            <div hidden>{{ form.DELETE }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="add_cont">
+                <button id="add_contacts_form" class="btn btn-outline-success add-cont-btn" type="button">
+                    <span>{% trans 'Додати кінотеатр' %}</span>
+                </button>
+            </div>
+            <br>
+            {% include 'adminapp/pages/seo_block.html' %}
+            <div>
+                <div style="margin-left:45%;">
+                    <button name="save-button" type="submit" class="btn btn-primary">{% trans 'Зберегти' %}</button>
+                </div>
+            </div>
+            <br>
+        </form>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <!--JS for Cinemapage-->
+    <script src="{% static 'adminapp/js/add_cinema_contact.js' %}"></script>
+{% endblock %}
