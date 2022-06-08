@@ -1,19 +1,28 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.forms import modelformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
 from datetime import date
 from .forms import *
 from .models import *
 
 
+@user_passes_test(lambda user: user.is_staff, redirect_field_name=None, login_url='main_page')
 def base(request):
     return render(request, "adminapp/elements/welcome_page.html")
 
 
+@user_passes_test(lambda user: user.is_staff, login_url='welcome-page')
 def statistic(request):
     return render(request, "adminapp/elements/base.html")
 
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+
+@user_passes_test(lambda user: user.is_staff, login_url='welcome-page')
 def banners(request):
     main_top_banners = MainTopBanners.objects.all()
     top_banners_formset = modelformset_factory(MainTopBanners, form=MainTopBannersForm, extra=0, can_delete=True)
@@ -32,14 +41,23 @@ def banners(request):
                                                                   queryset=main_news_promotions_banner,
                                                                   prefix='news_promotions')
 
-    banners_settings = BannersSettings.objects.get(pk=1)
-    banners_settings_form = BannersSettingsForm(request.POST or None, instance=banners_settings, prefix='settings')
-
-    print(request.POST)
+    t_b_settings = BannersSettings.objects.get(settings_for='top_banners')
+    n_p_settings = BannersSettings.objects.get(settings_for='news-promotions_banners')
+    t_b_settings_form = BannersSettingsForm(request.POST or None, instance=t_b_settings, prefix='t_b_settings')
+    n_p_settings_form = BannersSettingsForm(request.POST or None, instance=n_p_settings, prefix='n_p_settings')
 
     if request.method == 'POST':
-        if request.POST['save-button'] == 'top-banner-save':
-            if top_banners_forms.is_valid() and banners_settings_form.is_valid():
+        if is_ajax(request=request):
+            if background_banner_form.is_valid():
+                background_banner_form.save()
+                print('work')
+                return HttpResponse(status=200)
+            else:
+                print(f"Background ---> {background_banner_form.errors}")
+                return HttpResponse(status=400)
+
+        elif request.POST['save-button'] == 'top-banner-save':
+            if top_banners_forms.is_valid() and t_b_settings_form.is_valid():
                 print(top_banners_forms)
                 top_banners_forms.save(commit=False)
                 for form in top_banners_forms:
@@ -48,43 +66,35 @@ def banners(request):
                         print(form)
 
                 top_banners_forms.save()
-                banners_settings_form.save()
+                t_b_settings_form.save()
                 return redirect('/adminapp/banners')
             else:
                 print(f"Top banner ---> {top_banners_forms.errors}")
-                print(f"Settings ---> {banners_settings_form.errors}")
+                print(f"Settings ---> {t_b_settings_form.errors}")
                 messages.error(request, 'Дані хибні')
 
         elif request.POST['save-button'] == 'news-promotions-save':
-            if news_promotion_banners_forms.is_valid() and banners_settings_form.is_valid():
+            if news_promotion_banners_forms.is_valid() and n_p_settings_form.is_valid():
                 news_promotion_banners_forms.save()
-                banners_settings_form.save()
+                n_p_settings_form.save()
                 return redirect('/adminapp/banners')
             else:
                 print(f"News promotions ---> {news_promotion_banners_forms.errors}")
-                print(f"Settings ---> {banners_settings_form.errors}")
-                messages.error(request, 'Дані хибні')
-
-        else:
-            if background_banner_form.is_valid() and banners_settings_form.is_valid():
-                background_banner_form.save()
-                banners_settings_form.save()
-                return redirect('/adminapp/banners')
-            else:
-                print(f"Background ---> {background_banner_form.errors}")
-                print(f"Settings ---> {banners_settings_form.errors}")
+                print(f"Settings ---> {n_p_settings_form.errors}")
                 messages.error(request, 'Дані хибні')
 
     context = {
         'top_banners_forms': top_banners_forms,
         'background': background_banner_form,
-        'news_promotions': news_promotion_banners_forms,
-        'settings': banners_settings_form,
+        'news_promotions_forms': news_promotion_banners_forms,
+        't_b_settings': t_b_settings_form,
+        'n_p_settings': n_p_settings_form,
     }
     return render(request, "adminapp/elements/banners.html", context)
 
 
 # region cinema_view
+@permission_required('adminapp.view_cinema', login_url='login')
 def cinemas(request):
     cinemas = Cinema.objects.all()
     context = {
@@ -93,6 +103,7 @@ def cinemas(request):
     return render(request, "adminapp/elements/cinemas.html", context)
 
 
+@permission_required('adminapp.create_cinema', login_url='login')
 def cinema_create(request):
     images = Image.objects.none()
     image_formset = modelformset_factory(Image, form=ImageForm, extra=0, can_delete=True)
@@ -103,7 +114,7 @@ def cinema_create(request):
 
     if request.method == 'POST':
         if form.is_valid() and image_forms.is_valid() and seo_form.is_valid():
-            # this_gallery = get_gallery()
+            print(image_forms)
             this_gallery = Gallery.objects.create()
             save_image_formset(image_forms, this_gallery)
 
@@ -129,6 +140,7 @@ def cinema_create(request):
     return render(request, "adminapp/pages/cinemas/cinema_page.html", context)
 
 
+@permission_required('adminapp.change_cinema', login_url='login')
 def cinema_update(request, pk):
     model = Cinema.objects.get(pk=pk)
     seo_model = SeoBlock.objects.get(pk=model.seo_block.pk)
@@ -142,6 +154,7 @@ def cinema_update(request, pk):
 
     if request.method == 'POST':
         if form.is_valid() and image_forms.is_valid() and seo_form.is_valid():
+            print(image_forms)
             this_gallery = Gallery.objects.get(pk=model.gallery.pk)
 
             save_image_formset(image_forms, this_gallery)
@@ -164,6 +177,7 @@ def cinema_update(request, pk):
     return render(request, "adminapp/pages/cinemas/cinema_page.html", context)
 
 
+@permission_required('adminapp.delete_cinema', login_url='login')
 def cinema_delete(request, pk):
     model = Cinema.objects.get(pk=pk)
     this_gallery = Gallery.objects.get(pk=model.gallery.pk)
@@ -180,6 +194,7 @@ def cinema_delete(request, pk):
 # endregion cinema_view
 
 # region hall
+@permission_required('adminapp.create_hall', login_url='login')
 def hall_create(request, cinema_pk):
     images = Image.objects.none()
     image_formset = modelformset_factory(Image, form=ImageForm, extra=0, can_delete=True)
@@ -217,6 +232,7 @@ def hall_create(request, cinema_pk):
     return render(request, "adminapp/pages/halls/hall_page.html", context)
 
 
+@permission_required('adminapp.change_hall', login_url='login')
 def hall_update(request, cinema_pk, pk):
     model = Hall.objects.get(pk=pk)
     seo_model = SeoBlock.objects.get(pk=model.seo_block.pk)
@@ -251,6 +267,7 @@ def hall_update(request, cinema_pk, pk):
     return render(request, "adminapp/pages/halls/hall_page.html", context)
 
 
+@permission_required('adminapp.delete_hall', login_url='login')
 def hall_delete(request, cinema_pk, pk):
     model = Hall.objects.get(pk=pk)
     this_gallery = Gallery.objects.get(pk=model.gallery.pk)
@@ -268,6 +285,7 @@ def hall_delete(request, cinema_pk, pk):
 
 
 # region news/promo
+@permission_required('adminapp.view_articles', login_url='login')
 def news(request):
     news_note = Articles.objects.filter(article_type='news')
     context = {
@@ -276,6 +294,7 @@ def news(request):
     return render(request, "adminapp/elements/news.html", context)
 
 
+@permission_required('adminapp.view_articles', login_url='login')
 def promotions(request):
     promotions_note = Articles.objects.filter(article_type='promotions')
     context = {
@@ -284,6 +303,7 @@ def promotions(request):
     return render(request, "adminapp/elements/promotions.html", context)
 
 
+@permission_required('adminapp.create_articles', login_url='login')
 def article_create(request, article_type):
     images = Image.objects.none()
     image_formset = modelformset_factory(Image, form=ImageForm, extra=0, can_delete=True)
@@ -319,6 +339,7 @@ def article_create(request, article_type):
     return render(request, "adminapp/pages/articles/article_page.html", context)
 
 
+@permission_required('adminapp.change_articles', login_url='login')
 def article_update(request, article_type, pk):
     model = Articles.objects.get(pk=pk)
     seo_model = SeoBlock.objects.get(pk=model.seo_block.pk)
@@ -352,6 +373,7 @@ def article_update(request, article_type, pk):
     return render(request, "adminapp/pages/articles/article_page.html", context)
 
 
+@permission_required('adminapp.delete_articles', login_url='login')
 def article_delete(request, article_type, pk):
     model = Articles.objects.get(pk=pk)
     this_gallery = Gallery.objects.get(pk=model.gallery.pk)
@@ -366,13 +388,12 @@ def article_delete(request, article_type, pk):
     }
     return render(request, "adminapp/pages/articles/article_delete.html", context)
 
-# endregion news/promo
 
-def mailing(request):
-    return render(request, "adminapp/elements/mailing.html")
+# endregion news/promo
 
 
 # region movie
+@permission_required('adminapp.view_movie', login_url='login')
 def movies(request):
     today = date.today()
     current_movies = Movie.objects.filter(start_sale__lte=today)
@@ -385,6 +406,7 @@ def movies(request):
     return render(request, "adminapp/elements/movies.html", context)
 
 
+@permission_required('adminapp.create_movie', login_url='login')
 def movie_create(request):
     images = Image.objects.none()
     image_formset = modelformset_factory(Image, form=ImageForm, extra=0, can_delete=True)
@@ -420,6 +442,7 @@ def movie_create(request):
     return render(request, 'adminapp/pages/movies/movie_page.html', context)
 
 
+@permission_required('adminapp.change_movie', login_url='login')
 def movie_update(request, pk):
     model = Movie.objects.get(pk=pk)
     seo_model = SeoBlock.objects.get(pk=model.seo_block.pk)
@@ -453,6 +476,7 @@ def movie_update(request, pk):
     return render(request, 'adminapp/pages/movies/movie_page.html', context)
 
 
+@permission_required('adminapp.delete_movie', login_url='login')
 def movie_delete(request, pk):
     model = Movie.objects.get(pk=pk)
     this_gallery = Gallery.objects.get(pk=model.gallery.pk)
@@ -465,9 +489,10 @@ def movie_delete(request, pk):
     else:
         return render(request, 'adminapp/pages/movies/movie_delete.html')
 
+
 # endregion movie
 
-
+@permission_required('adminapp.view_sitepage', login_url='login')
 def pages_base(request):
     main_page = get_object_or_404(MainPage, pk=1)
     pages = SitePage.objects.order_by('id')
@@ -485,6 +510,7 @@ def pages_base(request):
     return render(request, "adminapp/elements/pages_base.html", context)
 
 
+@permission_required('adminapp.create_sitepage', login_url='login')
 def pages_create(request):
     image = Image.objects.none()
     image_formset = modelformset_factory(Image, form=ImageForm, extra=0, can_delete=True)
@@ -521,6 +547,7 @@ def pages_create(request):
     return render(request, "adminapp/pages/pagesbase/base_page.html", context)
 
 
+@permission_required('adminapp.change_sitepage', login_url='login')
 def pages_update(request, pk):
     model = SitePage.objects.get(pk=pk)
     seo_model = SeoBlock.objects.get(pk=model.seo_block.pk)
@@ -554,6 +581,7 @@ def pages_update(request, pk):
     return render(request, "adminapp/pages/pagesbase/base_page.html", context)
 
 
+@permission_required('adminapp.delete_sitepage', login_url='login')
 def pages_delete(request, pk):
     model = SitePage.objects.get(pk=pk)
     this_gallery = Gallery.objects.get(pk=model.gallery.pk)
@@ -567,6 +595,7 @@ def pages_delete(request, pk):
         return render(request, 'adminapp/pages/pagesbase/base_page_delete.html')
 
 
+@permission_required('adminapp.change_mainpage', login_url='login')
 def main_page_update(request):
     model = MainPage.objects.get(pk=1)
     seo_model = SeoBlock.objects.get(pk=model.seo_block.pk)
@@ -593,6 +622,7 @@ def main_page_update(request):
     return render(request, "adminapp/pages/pagesbase/main_page.html", context)
 
 
+@permission_required('adminapp.change_cinemacontacts', login_url='login')
 def cinema_contacts_update(request):
     contacts = CinemaContacts.objects.all()
     if contacts[0].seo_block is None:

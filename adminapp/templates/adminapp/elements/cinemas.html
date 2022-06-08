@@ -28,6 +28,7 @@
         {% for cinema in cinemas %}
         <div class="cinema-div d-flex justify-content-center align-items-start">
             <div class="d-flex flex-row-reverse">
+
                 <a href="{% url 'cinema-delete' cinema.id %}">
                     <button class="btn btn-tool" type="button" style="width:10px; height:40px;">
                         <i class="fas fa-times"></i>

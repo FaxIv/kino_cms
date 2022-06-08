@@ -1,16 +1,241 @@
-{% load i18n %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}MegaKino{% endblock %}</title>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/fontawesome-free/css/all.min.css' %}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet"
+          href="{% static 'adminapp/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/jqvmap/jqvmap.min.css' %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'adminapp/dist/css/adminlte.min.css' %}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/daterangepicker/daterangepicker.css' %}">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/summernote/summernote-bs4.min.css' %}">
+
+    {% block style %}
+    {% endblock %}
+
+    {% block meta %}
+    {% endblock %}
+
+    <style>
+        .fas {
+            color: black;
+        }
+
+        .logo-img {
+            width: 240px;
+            height: 200px;
+        }
+
+        .logo-header {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-bar-header {
+
+        }
+
+        .main-header {
+            width: 820px;
+        }
+
+
+        @media screen and (max-width: 800px) {
+            .logo-header {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+                z-index: 2;
+            }
+
+            .logo-header-item {
+                margin: 15px;
+            }
+
+            .main-header {
+                width: auto;
+            }
+
+        }
+
+    </style>
 </head>
 <body>
+
+{% block bacground %}
+{% endblock %}
+
+<header>
+    {% block login %}
+    {% endblock %}
+    <div class="container">
+        <div class="logo-header">
+            <div class="logo-header-item logo">
+                <a href="#" class="navbar-brand">
+                    <img src="/media/adminapp/logo/MegaKinoLogo.png" alt="MegaKino Logo"
+                         class="logo-img">
+                </a>
+            </div>
+            <div class="logo-header-item search-form">
+                <form class="form-inline ml-0 ml-md-3">
+                    <div class="input-group input-group-sm">
+                        <input class="form-control form-control-navbar" type="search" placeholder="Search"
+                               aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-navbar" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="logo-header-item social">
+                <img src="" alt="social">
+            </div>
+            <div class="logo-header-item phone">
+                <h4>123123123</h4>
+                <h4>543545433</h4>
+            </div>
+        </div>
+        <div class="nav-bar-header">
+            <nav class="main-header navbar navbar-expand-md navbar-light ">
+                <div class="container">
+                    <button class="navbar-toggler order-1" type="button" data-toggle="collapse"
+                            data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+                        <!-- Left navbar links -->
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">{% trans 'Афіша' %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">{% trans 'Розклад' %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">{% trans 'Скоро' %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">{% trans 'Кінотеатри' %}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">{% trans 'Акції' %}</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false" class="nav-link dropdown-toggle">{% trans 'Про кінотеатр' %}</a>
+                                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                                    <li><a href="#" class="dropdown-item">{% trans 'Новини' %}</a></li>
+                                    <li><a href="#" class="dropdown-item">{% trans 'Кафе' %}</a></li>
+                                    <li><a href="#" class="dropdown-item">{% trans 'Vip-зал' %}</a></li>
+                                    <li><a href="#" class="dropdown-item">{% trans 'Дитяча кімната' %}</a></li>
+                                    <li><a href="#" class="dropdown-item">{% trans 'Реклама' %}</a></li>
+                                    <li><a href="#" class="dropdown-item">{% trans 'Мобільний додаток' %}</a></li>
+                                    <li><a href="#" class="dropdown-item">{% trans 'Контакти' %}</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+                        <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                            <input name="next" type="hidden" value="{{ redirect_to }}">
+                            <select class="select-language" name="language">
+                                {% get_current_language as LANGUAGE_CODE %}
+                                {% get_available_languages as LANGUAGES %}
+                                {% get_language_info_list for LANGUAGES as languages %}
+                                {% for language in languages %}
+                                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %}
+                                            selected{% endif %}>
+                                        {{ language.name_local }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </ul>
+                </div>
+            </nav>
+            <div>
+            </div>
+        </div>
+    </div>
+</header>
+<br>
 {% block content %}
 
+
 {% endblock %}
-</body>
+
+
+
+<!-- jQuery -->
+<script src="{% static 'adminapp/plugins/jquery/jquery.min.js' %}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{% static 'adminapp/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+    $.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'adminapp/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- ChartJS -->
+<script src="{% static 'adminapp/plugins/chart.js/Chart.min.js' %}"></script>
+<!-- Sparkline -->
+<script src="{% static 'adminapp/plugins/sparklines/sparkline.js' %}"></script>
+<!-- JQVMap -->
+<script src="{% static 'adminapp/plugins/jqvmap/jquery.vmap.min.js' %}"></script>
+<script src="{% static 'adminapp/plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+<script src="{% static 'adminapp/plugins/jquery-validation/jquery.validate.min.js' %}"></script>
+<!-- jQuery Knob Chart -->
+<script src="{% static 'adminapp/plugins/jquery-knob/jquery.knob.min.js' %}"></script>
+<!-- daterangepicker -->
+<script src="{% static 'adminapp/plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'adminapp/plugins/daterangepicker/daterangepicker.js' %}"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{% static 'adminapp/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<!-- Summernote -->
+<script src="{% static 'adminapp/plugins/summernote/summernote-bs4.min.js' %}"></script>
+<!-- overlayScrollbars -->
+<script src="{% static 'adminapp/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'adminapp/dist/js/adminlte.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'adminapp/dist/js/pages/dashboard.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.38.0/js/tempusdominus-bootstrap-4.min.js"
+        crossorigin="anonymous"></script>
+<script>
+    <!-- Language select -->
+    $(function () {
+        $('.select-language').change(function () {
+            $(this.form).submit()
+        })
+    })
+</script>
 {% block script %}
 
 {% endblock %}
+</body>
 </html>

@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.utils.translation import gettext_lazy as _
 
 
 class Gallery(models.Model):
@@ -51,8 +52,6 @@ class AbstractPage(models.Model):
         abstract = True
 
 
-
-
 class AbstractProperties(models.Model):
     flag_3d = models.BooleanField(verbose_name='3D')
     flag_2d = models.BooleanField(verbose_name='2D')
@@ -88,8 +87,13 @@ class MainTopBanners(BaseBannerModel):
 
 
 class BackgroundBanner(BaseBannerModel):
+    CHOICE = (
+        ('banner', _('Фото на фоні')),
+        ('background', _('Просто фон')),
+    )
+
     banner_image = models.ImageField(upload_to='main/banners/background/', null=True, blank=True)
-    background_or_banner = models.CharField(max_length=20)
+    background_or_banner = models.CharField(max_length=30, choices=CHOICE, default='background')
 
     class Meta:
         verbose_name_plural = 'Background banner'
@@ -106,10 +110,9 @@ class MainNewsAndPromotionsBanners(BaseBannerModel):
 
 
 class BannersSettings(models.Model):
-    is_active_top_banner = models.BooleanField(default=False)
-    speed_top_banner = models.PositiveSmallIntegerField(default=5)
-    is_active_news_and_promotion = models.BooleanField(default=False)
-    speed_news_and_promotion = models.PositiveSmallIntegerField(default=5)
+    settings_for = models.CharField(max_length=50, null=True, blank=True)
+    is_active = models.BooleanField(default=False)
+    speed = models.PositiveSmallIntegerField(default=5)
 
     class Meta:
         verbose_name_plural = 'Banners page settings'

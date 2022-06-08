@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput, DateInput, Textarea, URLInput, CheckboxInput, NumberInput, HiddenInput, \
-    ImageField, DateTimeInput, Select
+    ImageField, DateTimeInput, Select, RadioSelect
 from django.utils.translation import gettext_lazy as _
 from .models import *
 
@@ -33,7 +33,7 @@ class SeoBlockForm(ModelForm):
 class MainTopBannersForm(ModelForm):
     class Meta:
         model = MainTopBanners
-        fields ='__all__'
+        fields = '__all__'
 
         widgets = {
             'banner_url': URLInput(attrs={'class': 'form-control'}),
@@ -47,7 +47,7 @@ class BackgroundBannerForm(ModelForm):
         fields = '__all__'
 
         widgets = {
-            'background_or_banner': TextInput(attrs={'class': 'form-control'}),
+            'background_or_banner': RadioSelect(),
         }
 
 
@@ -65,7 +65,7 @@ class BannersSettingsForm(ModelForm):
 
     class Meta:
         model = BannersSettings
-        fields = '__all__'
+        exclude = ('settings_for',)
 
         SPEED = (
             ('5', '5'),
@@ -74,10 +74,8 @@ class BannersSettingsForm(ModelForm):
         )
 
         widgets = {
-            'is_active_top_banner': CheckboxInput(attrs={'class': 'form-check-input'}),
-            'speed_top_banner': Select(choices=SPEED, attrs={'class': 'form-control'}),
-            'is_active_news_and_promotion': CheckboxInput(attrs={'class': 'form-check-input'}),
-            'speed_news_and_promotion': Select(choices=SPEED, attrs={'class': 'form-control'}),
+            'is_active': CheckboxInput(attrs={'class': 'form-check-input'}),
+            'speed': Select(choices=SPEED, attrs={'class': 'form-control'}),
         }
 
 

@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
+from django import forms
 
 from users.models import SiteUser
 
@@ -13,5 +14,8 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = SiteUser
-        fields = '__all__'
-        # fields = ('username',)
+        fields = ('first_name', 'last_name', 'username', 'language', 'gender', 'email', 'address', 'birthday', 'phone', 'city')
+        widgets = {
+            'language': forms.RadioSelect(),
+            'gender': forms.RadioSelect(),
+        }

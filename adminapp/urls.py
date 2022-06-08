@@ -16,13 +16,15 @@ Including another URLconf
 
 from django.urls import path
 from .views import *
+from users.views import LoginUser
+
 
 urlpatterns = [
     path('', base, name='welcome_page'),
 
     path('statistic/', statistic),
 
-    path('banners/', banners),
+    path('banners/', banners, name='banners'),
 
     path('movies/', movies),
     path('movies/moviepage/', movie_create),
@@ -49,6 +51,4 @@ urlpatterns = [
     path('pages/<int:pk>/pages_base_delete/', pages_delete, name='pages-delete'),
     path('pages/main_page/', main_page_update, name='main-page-update'),
     path('pages/cinema_contacts/', cinema_contacts_update, name='cinema-contacts-update'),
-
-    path('mailing/', mailing),
 ]
