@@ -35,3 +35,11 @@ class SiteUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class MailFiles(models.Model):
+    mail = models.FileField(upload_to='users/mail/', null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+
+

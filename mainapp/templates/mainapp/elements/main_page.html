@@ -1,4 +1,4 @@
-{% extends "mainapp/elements/base.html" %}
+{% extends "mainapp/elements/mainapp_base.html" %}
 {% load static i18n %}
 {% block title %}MegaKino | {% trans 'Головна' %}{% endblock %}
 
@@ -21,10 +21,6 @@
             z-index: 0;
         }
 
-        .container {
-            position: relative;
-            z-index: 2;
-        }
 
         .login-div {
             background: whitesmoke;
@@ -37,8 +33,9 @@
         }
 
         .content-block {
+            position: relative;
+            z-index: 2;
             background: whitesmoke;
-
         }
 
         .movie-card {
@@ -81,7 +78,7 @@
                         {% endif %}</a>
                 </div>
                 <div>
-                    <a href="{% url 'logout' %}"><i class="fas fa-power-off"></i></a>
+                    <a href="{% url 'mainapp:logout' %}"><i class="fas fa-power-off"></i></a>
                 </div>
             {% else %}
                 <div>
@@ -113,7 +110,7 @@
                     </ol>
                     <div class="carousel-inner">
                         {% for top_bn in top_banners %}
-                            <div class="carousel-item">
+                            <div class="carousel-item" data-interval="{{ t_b_settings.speed }}">
                                 <img src="{{ top_bn.banner_storage_url }}" class="d-block w-100" alt="top_banner_img">
                             </div>
                         {% endfor %}

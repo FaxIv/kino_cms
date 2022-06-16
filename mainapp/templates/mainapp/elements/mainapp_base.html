@@ -34,6 +34,27 @@
     {% endblock %}
 
     <style>
+
+        .top-banner {
+            max-height: 500px;
+            width: 100%;
+            height: auto;
+            top: 0;
+            left: 0;
+            position: relative;
+        }
+
+        .page-block {
+            width: 1300px;
+            margin: 0 auto;
+            display: flex;
+        }
+
+        .context-promo-img {
+            width: 220px;
+            height: 340px;
+        }
+
         .fas {
             color: black;
         }
@@ -43,22 +64,95 @@
             height: 200px;
         }
 
+        .social {
+            width: 260px;
+        }
+
         .logo-header {
             display: flex;
             justify-content: space-around;
             align-items: center;
             position: relative;
-            z-index: 2;
-        }
-
-        .nav-bar-header {
-
+            z-index: 10;
         }
 
         .main-header {
             width: 820px;
+            border: 2px solid black;
+            height: 35px;
+            background: white;
         }
 
+        .nav-link {
+            color: black;
+        }
+
+        .footer-div {
+            position: relative;
+            z-index: 2;
+            background: whitesmoke;
+        }
+
+        .footer-block {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        div.app-footer-div img {
+            width: 150px;
+            height: 50px;
+        }
+
+        .footer-menu {
+            display: flex;
+            justify-content: space-between;
+            width: 320px;
+        }
+
+        .footer-content {
+            padding: 20px;
+        }
+
+
+        div.footer-menu li {
+            list-style-type: none;
+        }
+
+        div.footer-menu ul {
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        div.footer-menu a {
+            color: black;
+        }
+
+        div.app-footer-div img {
+            border-radius: 10px;
+        }
+
+
+        .copyright-div {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        @media screen and (max-width: 1000px) {
+            .footer-menu {
+                display: block;
+            }
+
+            .footer-block {
+                display: block;
+            }
+
+            .footer-content {
+                padding: 20px;
+            }
+
+        }
 
         @media screen and (max-width: 800px) {
             .logo-header {
@@ -76,8 +170,18 @@
 
             .main-header {
                 width: auto;
+                border: 2px solid black;
+                height: auto;
+                background: white;
             }
 
+        }
+
+        hr {
+            border: none;
+            background-color: black;
+            height: 2px;
+            width: 97%;
         }
 
     </style>
@@ -93,7 +197,7 @@
     <div class="container">
         <div class="logo-header">
             <div class="logo-header-item logo">
-                <a href="#" class="navbar-brand">
+                <a href="{% url 'mainapp:main_page' %}" class="navbar-brand">
                     <img src="/media/adminapp/logo/MegaKinoLogo.png" alt="MegaKino Logo"
                          class="logo-img">
                 </a>
@@ -103,20 +207,19 @@
                     <div class="input-group input-group-sm">
                         <input class="form-control form-control-navbar" type="search" placeholder="Search"
                                aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-navbar" type="submit">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
                     </div>
                 </form>
             </div>
             <div class="logo-header-item social">
-                <img src="" alt="social">
+                <a href="#"><img src="/media/mainapp/social/youtube.png" alt="youtube"></a>
+                <a href="#"><img src="/media/mainapp/social/facebook.png" alt="facebook"></a>
+                <a href="#"><img src="/media/mainapp/social/instagram.png" alt="instagram"></a>
+                <a href="#"><img src="/media/mainapp/social/twitter.png" alt="twitter"></a>
+                <a href="#"><img src="/media/mainapp/social/googleplus.png" alt="google"></a>
             </div>
             <div class="logo-header-item phone">
-                <h4>123123123</h4>
-                <h4>543545433</h4>
+                <h3>(123)123123</h3>
+                <h3>(543)545433</h3>
             </div>
         </div>
         <div class="nav-bar-header">
@@ -131,31 +234,40 @@
                         <!-- Left navbar links -->
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a href="#" class="nav-link">{% trans 'Афіша' %}</a>
+                                <a href="{% url 'mainapp:poster' %}" class="nav-link">{% trans 'Афіша' %}</a>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">{% trans 'Розклад' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">{% trans 'Скоро' %}</a>
+                                <a href="{% url 'mainapp:soon' %}" class="nav-link">{% trans 'Скоро' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">{% trans 'Кінотеатри' %}</a>
+                                <a href="{% url 'mainapp:cinemas' %}" class="nav-link">{% trans 'Кінотеатри' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">{% trans 'Акції' %}</a>
+                                <a href="{% url 'mainapp:promotions' %}" class="nav-link">{% trans 'Акції' %}</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false" class="nav-link dropdown-toggle">{% trans 'Про кінотеатр' %}</a>
+                                <a id="dropdownSubMenu1" href="{% url 'mainapp:base_site_page' 'about_cinema' %}"
+                                   data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false"
+                                   class="nav-link dropdown-toggle">{% trans 'Про кінотеатр' %}</a>
                                 <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                                    <li><a href="#" class="dropdown-item">{% trans 'Новини' %}</a></li>
-                                    <li><a href="#" class="dropdown-item">{% trans 'Кафе' %}</a></li>
-                                    <li><a href="#" class="dropdown-item">{% trans 'Vip-зал' %}</a></li>
-                                    <li><a href="#" class="dropdown-item">{% trans 'Дитяча кімната' %}</a></li>
-                                    <li><a href="#" class="dropdown-item">{% trans 'Реклама' %}</a></li>
+                                    <li><a href="{% url 'mainapp:news' %}"
+                                           class="dropdown-item">{% trans 'Новини' %}</a></li>
+                                    <li><a href="{% url 'mainapp:base_site_page' 'cafe' %}"
+                                           class="dropdown-item">{% trans 'Кафе' %}</a></li>
+                                    <li><a href="{% url 'mainapp:base_site_page' 'vip_hall' %}"
+                                           class="dropdown-item">{% trans 'Vip-зал' %}</a></li>
+                                    <li><a href="{% url 'mainapp:base_site_page' 'children_room' %}"
+                                           class="dropdown-item">{% trans 'Дитяча кімната' %}</a></li>
+                                    <li><a href="{% url 'mainapp:base_site_page' 'advertising' %}"
+                                           class="dropdown-item">{% trans 'Реклама' %}</a></li>
                                     <li><a href="#" class="dropdown-item">{% trans 'Мобільний додаток' %}</a></li>
-                                    <li><a href="#" class="dropdown-item">{% trans 'Контакти' %}</a></li>
+                                    <li><a href="{% url 'mainapp:contacts' %}"
+                                           class="dropdown-item">{% trans 'Контакти' %}</a>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
@@ -186,9 +298,67 @@
 <br>
 {% block content %}
 
-
 {% endblock %}
-
+<div class="container footer-div" style="margin-top: -20px;">
+    <br>
+    <hr>
+    <div class="footer-block">
+        <div class="mobile-app footer-content">
+            <h5>{% trans 'Мобільний додаток' %}</h5>
+            <div class="app-footer-div">
+                <img src="/media/mainapp/mobile_app/google_play_logo.png" alt="google_play">
+                <img src="/media/mainapp/mobile_app/app_store_logo.png" alt="app_store">
+            </div>
+        </div>
+        <div class="footer-menu footer-content">
+            <div>
+                <a href="#"><h5>{% trans 'Афіша' %}</h5></a>
+                <ul>
+                    <li>
+                        <a href="#"><h6>{% trans 'Розклад' %}</h6></a>
+                    </li>
+                    <li>
+                        <a href="#"><h6>{% trans 'Скоро в прокаті' %}</h6></a>
+                    </li>
+                    <li>
+                        <a href="#"><h6>{% trans 'Кінотеатри' %}</h6></a>
+                    </li>
+                    <li>
+                        <a href="#"><h6>{% trans 'Акції' %}</h6></a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <a href="{% url 'mainapp:base_site_page' 'about_cinema' %}"><h5>{% trans 'Про кінотеатр' %}</h5></a>
+                <ul>
+                    <li>
+                        <a href="#"><h6>{% trans 'Новини' %}</h6></a>
+                    </li>
+                    <li>
+                        <a href="{% url 'mainapp:base_site_page' 'advertising' %}"><h6>{% trans 'Реклама' %}</h6></a>
+                    </li>
+                    <li>
+                        <a href="{% url 'mainapp:base_site_page' 'cafe' %}"><h6>{% trans 'Кафе-Бар' %}</h6></a>
+                    </li>
+                    <li>
+                        <a href="{% url 'mainapp:contacts' %}"><h6>{% trans 'Контакти' %}</h6></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-social footer-content">
+            <a href="#"><img src="/media/mainapp/social/youtube.png" alt="youtube"></a>
+            <a href="#"><img src="/media/mainapp/social/facebook.png" alt="facebook"></a>
+            <a href="#"><img src="/media/mainapp/social/instagram.png" alt="instagram"></a>
+            <a href="#"><img src="/media/mainapp/social/twitter.png" alt="twitter"></a>
+            <a href="#"><img src="/media/mainapp/social/googleplus.png" alt="google"></a>
+        </div>
+    </div>
+    <div class="copyright-div">
+        <h6>©KinoCMS 2022, All right reserved</h6>
+        <h6>{% trans 'Розробка сайтів' %}: AVADA-MEDIA</h6>
+    </div>
+</div>
 
 
 <!-- jQuery -->
@@ -234,6 +404,9 @@
         })
     })
 </script>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js#xfbml=1&version=v14.0"
+        nonce="H77MEAmC"></script>
 {% block script %}
 
 {% endblock %}

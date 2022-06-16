@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from django import forms
 
-from users.models import SiteUser
+from users.models import SiteUser, MailFiles
 
 
 
@@ -19,3 +19,9 @@ class CustomUserChangeForm(UserChangeForm):
             'language': forms.RadioSelect(),
             'gender': forms.RadioSelect(),
         }
+
+
+class MailFilesForm(forms.Form):
+    class Meta:
+        model = MailFiles
+        fields = ('mail',)

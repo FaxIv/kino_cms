@@ -6,7 +6,9 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView, TemplateView
+from django.views.generic.edit import ProcessFormView
+
 from adminapp.views import base
 from .forms import *
 from .models import *
@@ -83,8 +85,18 @@ class RegisterUser(CreateView):
         return reverse_lazy('welcome_page')
 
 
-class MailingView(ListView):
-    pass
+def mailing_view(request):
+    site_users = SiteUser.objects.all()
+    email_files = MailFiles.objects.all()
+
+    # if request.method == 'POST':
+    #
+    # else:
+    context = {
+        'site_users': site_users,
+        'email_files': email_files,
+    }
+    return render(request, 'users/elements/mailing.html', context)
 
 
 class MailingUsersView(ListView):

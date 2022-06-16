@@ -1,13 +1,77 @@
-{% extends "mainapp/elements/base.html" %}
+{% extends "mainapp/elements/mainapp_base.html" %}
 {% load static i18n %}
 {% block title %}MegaKino | {% trans 'Кінотеатри' %}{% endblock %}
 
+{% block style %}
+    <style>
+        body {
+            background: whitesmoke;
+        }
+
+        .all-cinemas {
+            max-height: 1000px;
+            display: flex;
+        }
+
+        .concrete-cinema a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .concrete-cinema img {
+            width: 340px;
+            height: 300px;
+
+        }
+    </style>
+{% endblock %}
+
 
 {% block content %}
+    <img class="top-banner" src="/media/mainapp/top_banners/cinnemas_top_banner.jpeg" alt="top_banner">
+    <div class="page-block">
+        <h4 style="text-align: center">{% trans 'Наші кінотеатри' %}</h4>
+        <br>
+        <div class="all-cinemas">
+            {% for c in cinemas %}
+                <div class="concrete-cinema">
+                    <a href="#">
+                        <img src="{{ c.main_image_url }}" alt="cinema_logo">
+                        <h6>{{ c.title }}</h6>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="right-side-bar">
+            <div class="right-content">
+                <img class="context-promo-img" src="/media/image/context_promo.png" alt="context_promo">
+            </div>
+            <div class="fb-page right-content" data-href="https://www.facebook.com/facebook" data-tabs="timeline"
+                 data-width="250"
+                 data-height="340" data-small-header="false" data-adapt-container-width="true"
+                 data-hide-cover="false" data-show-facepile="true">
+                <blockquote cite="https://www.facebook.com/facebook" class="fb-xfbml-parse-ignore"><a
+                        href="https://www.facebook.com/facebook">Facebook</a></blockquote>
+            </div>
+        </div>
+    </div>
+    <br>
 
 {% endblock %}
 
 
 {% block script %}
+{#    <div id="fb-root"></div>#}
+{#    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js#xfbml=1&version=v14.0"#}
+{#            nonce="H77MEAmC"></script>#}
 
+    {# Script change map size #}
+    <script>
+        let mapBoxs = document.querySelectorAll('iframe')
+        for (let elem of mapBoxs) {
+            elem.height = '350'
+            elem.width = '470'
+        }
+    </script>
 {% endblock %}

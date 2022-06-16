@@ -1,0 +1,87 @@
+{% extends 'mainapp/elements/mainapp_base.html' %}
+{% load static i18n %}
+{% block title %}
+    MegaKino |
+    {% if articles_type == 'promotions' %}
+        {% trans 'Акції' %}
+    {% elif articles_type == 'news' %}
+        {% trans 'Новини' %}
+    {% endif %}
+{% endblock %}
+
+{% block style %}
+    <style>
+        body {
+            background: whitesmoke;
+        }
+
+        .elems-block {
+            background: #221146;
+        }
+
+        .concrete-article {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            width: 340px;
+            margin: 20px;
+            padding: 10px;
+        }
+
+        .img-card {
+            height: 250px;
+            width: 300px;
+            border-radius: 10px;
+        }
+
+        .h-form {
+            color: white;
+            text-align: center;
+            border-radius: 20px;
+            padding: 2px 7px;
+            margin: 3px;
+        }
+
+        .h-tc-block {
+            background: linear-gradient(to top, #932eb4, #800051)
+        }
+
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="page-block">
+        <div class="middle-block">
+            <h4 style="text-align: center;">
+                {% if articles_type == 'promotions' %}
+                    {% trans 'Акції та знижки' %}
+                {% elif articles_type == 'news' %}
+                    {% trans 'Новини' %}
+                {% endif %}
+            </h4>
+            <div class="elems-block">
+                {% for a in articles %}
+                    <div class="">
+                        <a class="concrete-article" href="">
+                            <img class="img-card" src="{{ a.main_image_url }}" alt="main_image">
+                            {{ a.title }}
+                            <div class="d-flex">
+                                <h6 class="h-form" style="background: black;">{{ a.date_publication|date:'d.m.Y' }}</h6>
+                                <h6 class="h-form h-tc-block">Dreamtown</h6>
+                                <h6 class="h-form h-tc-block">Gulliver</h6>
+                            </div>
+                            {{ a.text }}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% include 'mainapp/pages/about/left-side-bar.html' %}
+    </div>
+    <br>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

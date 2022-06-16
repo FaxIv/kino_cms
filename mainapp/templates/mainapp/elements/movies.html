@@ -1,0 +1,132 @@
+{% extends "mainapp/elements/mainapp_base.html" %}
+{% load static i18n %}
+{% block title %}MegaKino | {% trans 'Кінотеатри' %}{% endblock %}
+
+{% block style %}
+    <style>
+        body {
+            background: whitesmoke;
+        }
+
+
+        .left-bar {
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .left-bar img {
+            height: 320px;
+            width: 200px;
+            margin: 10px;
+        }
+
+        .sidebar {
+            width: 90%;
+        }
+
+        .poster-block {
+            width: 80%;
+            background: #221146;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .movie-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 165px;
+            height: 320px;
+        }
+
+        .movie-block img {
+            width: 130px;
+            height: 200px;
+            border-radius: 8px;
+        }
+
+        .movie-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .movie-flag-3d {
+            position: absolute;
+            margin-top: 10px;
+            margin-left: 140px;
+            width: 40px;
+            color: white;
+            text-align: center;
+            border-radius: 20px;
+            background: linear-gradient(to top, #932eb4, #800051)
+        }
+
+        .movie-flag-imax {
+            position: absolute;
+            margin-top: 37px;
+            margin-left: 140px;
+            width: 40px;
+            color: white;
+            text-align: center;
+            border-radius: 20px;
+            background: linear-gradient(to top, darkgreen, green)
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="page-block">
+        <div class="left-bar">
+            <div class="list-group list-group-flush sidebar">
+                <a class="list-group-item list-group-item-action list-group-item-light p-3 {% if date_filter == 'today' %}active{% endif %}"
+                   href="{% url 'mainapp:poster' %}">{% trans 'Афіша' %}</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3 {% if date_filter == 'soon' %}active{% endif %}"
+                   href="{% url 'mainapp:soon' %}">{% trans 'Скоро' %}</a>
+            </div>
+            <img class="context-promo-img" src="/media/image/context_promo.png" alt="context_promo">
+        </div>
+        <div class="poster-block">
+            {% for m in movies %}
+                {% if m.is_active %}
+                    <div class="movie-block">
+                        <h6>
+                            {% if date_filter == 'today' %}
+                                {% trans 'Зараз в кіно' %}
+                            {% elif date_filter == 'soon' %}
+                                C {{ m.start_sale|date:'d.m.Y' }}
+                            {% endif %}
+                        </h6>
+                        <a href="#">
+                            <div class="movie-card">
+                                {% if m.flag_3d %}
+                                    <h6 class="movie-flag-3d">3D</h6>
+                                {% endif %}
+                                {% if m.flag_imax %}
+                                    <h6 class="movie-flag-imax">IMAX</h6>
+                                {% endif %}
+                                <img src="{{ m.main_image_url }}" alt="{{ m.title }}">
+                                <h6>{{ m.title }}</h6>
+                            </div>
+                        </a>
+                        <a href="#">
+                            <button class="btn btn-warning  dz-clickable" type="button">
+                                <i class="fas fa-ticket-alt" style="color: white"></i>
+                                <span>{% trans 'КУПИТИ' %}</span>
+                            </button>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <br>
+{% endblock %}
+
+
+{% block script %}
+
+{% endblock %}

@@ -1,7 +1,179 @@
 {% extends 'adminapp/elements/base.html' %}
 {% load static i18n %}
 {% block title %}{% trans 'Розсилка' %}{% endblock %}
+{% block link %}
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/datatables-select/css/select.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'adminapp/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+    <style>
+        .selected {
+            background: black;
+        }
+
+        .page-content {
+            margin: 0 auto;
+        }
+
+        .page-border {
+            border: solid black;
+            border-radius: 15px;
+            padding: 25px;
+            width: 95%;
+        }
+    </style>
+
+{% endblock %}
+
+
 
 {% block content %}
-  <h1>Work Mailing</h1>
+    <div class="page-content">
+        <div class="sms-div page-border">
+            <div style="text-align: center;">
+                <h3><b>SMS</b></h3>
+            </div>
+            <div>
+                <div><h6>{% trans 'Обрати користувачів для розсилки' %}</h6></div>
+                <div></div>
+                <div>
+                    <button type="button" class="btn btn-outline-info">{% trans 'Обрати користувачів' %}</button>
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-success">{% trans 'Почати розсилку' %}</button>
+        </div>
+
+        <div class="mail-div page-border">
+            <div style="text-align: center;">
+                <h3><b>E-mail</b></h3>
+            </div>
+            <div><h6>{% trans 'Обрати користувачів для розсилки' %}</h6></div>
+            <div></div>
+            <div>
+                <button type="button" class="btn btn-outline-info">{% trans 'Обрати користувачів' %}</button>
+            </div>
+            <button type="button" class="btn btn-outline-success start-btn">{% trans 'Почати розсилку' %}</button>
+            {{ email_files }}
+        </div>
+    </div>
+
+    <div>
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">{% trans 'Користувачі' %}</h2>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="mailing-users" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>ID</th>
+                        <th>{% trans 'Дата реєстрації' %}</th>
+                        <th>{% trans 'День народження' %}</th>
+                        <th>Email</th>
+                        <th>{% trans 'Телефон' %}</th>
+                        <th>{% trans 'ПІБ' %}</th>
+                        <th>{% trans 'Псевдонім' %}</th>
+                        <th>{% trans 'Місто' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for u in site_users %}
+                        <tr style="background: white; color: black">
+                            <td></td>
+                            <td>{{ u.id }}</td>
+                            <td>{{ u.date_joined }}</td>
+                            <td>{{ u.birthday }}</td>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.phone }}</td>
+                            <td>{{ u.first_name }} {{ u.last_name }}</td>
+                            <td>{{ u.username }}</td>
+                            <td>{{ u.city }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+
+{% endblock %}
+
+{% block script %}
+    <!-- DataTables  & Plugins -->
+    <script src="{% static 'adminapp/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'adminapp/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'adminapp/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'adminapp/plugins/datatables-select/js/dataTables.select.min.js' %}"></script>
+    <script src="{% static 'adminapp/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+
+    <!-- Page specific script -->
+    <script>
+        $(function () {
+            let users_table = $('#mailing-users').DataTable( {
+                dom: 'frtipB',
+                columnDefs: [{
+                    oderable: false,
+                    className: 'select-checkbox',
+                    targets: 0,
+                }],
+                select: {
+                    style: 'multi',
+                    selector: 'td:first-child',
+                },
+                buttons: [{
+                    text: 'Відправити обраним',
+                    className: 'select-this',
+                    action: function (){
+                        let l = users_table.rows({ selected: true }).count();
+                        alert(l);
+                    },
+                }],
+                "lengthChange": false,
+                "language": {
+                    "search": "Пошук:",
+                    "paginate": {
+                        "first": "Перша",
+                        "previous": "Попередня",
+                        "next": "Наступна",
+                        "last": "Остання"
+                    },
+                    "emptyTable": "Ця таблиця не містить даних",
+                    "info": "Показано від _START_ по _END_ з _TOTAL_ записів",
+                },
+            })
+        })
+
+        {#$(function () {#}
+        {#    $('#mailing-users').DataTable({#}
+        {#        columnDefs: [{#}
+        {#            orderable: true,#}
+        {#            className: 'select-checkbox',#}
+        {#            targets: 0#}
+        {#        }],#}
+        {#        select: {#}
+        {#            style: 'multi',#}
+        {#            selector: 'td:first-child',#}
+        {#        },#}
+        {#        "paging": true,#}
+        {#        "lengthChange": false,#}
+        {#        "ordering": true,#}
+        {#        "info": true,#}
+        {#        "responsive": true,#}
+        {#        "language": {#}
+        {#            "search": "Пошук:",#}
+        {#            "paginate": {#}
+        {#                "first": "Перша",#}
+        {#                "previous": "Попередня",#}
+        {#                "next": "Наступна",#}
+        {#                "last": "Остання"#}
+        {#            },#}
+        {#            "emptyTable": "Ця таблиця не містить даних",#}
+        {#            "info": "Показано від _START_ по _END_ з _TOTAL_ записів",#}
+        {#        },#}
+        {#    });#}
+        {#)#}
+    </script>
 {% endblock %}

@@ -221,7 +221,7 @@ class CinemaContacts(models.Model):
     is_active = models.BooleanField(default=False)
     title = models.CharField(max_length=100)
     address = models.CharField(max_length=150)
-    coordinates = models.CharField(max_length=100)
+    coordinates = models.CharField(max_length=600)
     logo = models.ImageField(null=True, blank=True)
     seo_block = models.ForeignKey(SeoBlock, on_delete=models.SET_NULL, null=True, blank=True)
     date_created = models.DateField(auto_now_add=True)

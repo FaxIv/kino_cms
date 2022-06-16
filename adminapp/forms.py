@@ -68,9 +68,9 @@ class BannersSettingsForm(ModelForm):
         exclude = ('settings_for',)
 
         SPEED = (
-            ('5', '5'),
-            ('10', '10'),
-            ('15', '15'),
+            ('5000', '5'),
+            ('10000', '10'),
+            ('15000', '15'),
         )
 
         widgets = {

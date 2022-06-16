@@ -1,13 +1,142 @@
-{% extends "mainapp/elements/base.html" %}
+{% extends "mainapp/elements/mainapp_base.html" %}
 {% load static i18n %}
-{% block title %}MegaKino | {% endblock %}
+{# TODO: добавить правильный тайтл #}
+{% block title %}MegaKino | {{ page_content.title }}{% endblock %}
 
+
+{% block style %}
+    <style>
+        body {
+            background: whitesmoke;
+        }
+
+        .middle-block {
+            display: flex;
+        }
+
+        .content-block {
+            padding: 25px;
+        }
+
+        .right-side-bar {
+            margin-top: 75px;
+        }
+
+        .right-content {
+            margin-right: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media screen and (max-width: 1000px) {
+            .middle-block {
+                display: block;
+            }
+
+            .right-side-bar {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+        }
+
+
+    </style>
+{% endblock %}
 
 {% block content %}
-
+    <div class="base-page">
+        <div class="top-banner-div">
+            <img class="top-banner" src="{{ page_content.main_image_url }}" alt="top_banner">
+        </div>
+        <div class="middle-block">
+            <div class="content-block">
+                <div class="text-block">
+                    <h4 style="text-align: center">{{ page_content.title }}</h4>
+                    <p>{{ page_content.text|linebreaks }}</p>
+{#                    <div class="image-content">#}
+{#                        qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq#}
+{#                    </div>#}
+                </div>
+                <div class="content-gallery">
+                    {% if page_gallery %}
+                        <h4 style="text-align: center"><b>ФОТОГАЛЕРЕЯ</b></h4>
+                        <div class="carousel">
+                            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                <ol class="carousel-indicators">
+                                    {% for img in page_gallery %}
+                                        <li data-target="#carouselExampleIndicators"
+                                            data-slide-to="{{ forloop.counter0 }}"
+                                            class="indicator"></li>
+                                    {% endfor %}
+                                </ol>
+                                <div class="carousel-inner">
+                                    {% for img in page_gallery %}
+                                        <div class="carousel-item" data-interval="30000">
+                                            <img src="{{ img.image_url }}" class="d-block w-100"
+                                                 alt="top_banner_img">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button class="carousel-control-prev" type="button"
+                                        data-target="#carouselExampleIndicators"
+                                        data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button"
+                                        data-target="#carouselExampleIndicators"
+                                        data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="right-side-bar">
+                <div class="right-content">
+                    <img class="context-promo-img" src="/media/image/context_promo.png" alt="context_promo">
+                </div>
+                <div class="fb-page right-content" data-href="https://www.facebook.com/facebook" data-tabs="timeline"
+                     data-width="250"
+                     data-height="340" data-small-header="false" data-adapt-container-width="true"
+                     data-hide-cover="false" data-show-facepile="true">
+                    <blockquote cite="https://www.facebook.com/facebook" class="fb-xfbml-parse-ignore"><a
+                            href="https://www.facebook.com/facebook">Facebook</a></blockquote>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
 {% endblock %}
 
 
 {% block script %}
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js#xfbml=1&version=v14.0"
+            nonce="H77MEAmC"></script>
+    <script>
+        let topCarouselItems = document.querySelectorAll('.carousel-item')
+        if (topCarouselItems.length >= 1) {
+            topCarouselItems[0].classList.add('active')
+        }
 
+        let topCarouselIndicators = document.querySelectorAll('.indicator')
+        if (topCarouselIndicators) {
+            topCarouselIndicators[0].classList.add('active')
+        }
+
+        {#let textBlock = document.querySelector('.text-block')#}
+        {#let pItems = textBlock.querySelectorAll('p')#}
+        {#let pCount = pItems.length#}
+        {#let imageDiv = textBlock.querySelector('.image-content')#}
+        {#if (pCount >= 6) {#}
+        {#    let newImageDiv = imageDiv.cloneNode(true)#}
+        {#    newImageDiv.setAttribute('class', 'new-img-div')#}
+        {#    let targetP = pItems[4]#}
+        {#    targetP.after(newImageDiv)#}
+        {#    imageDiv.remove()#}
+    </script>
 {% endblock %}

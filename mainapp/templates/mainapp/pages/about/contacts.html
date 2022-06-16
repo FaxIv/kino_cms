@@ -1,13 +1,175 @@
-{% extends "mainapp/elements/base.html" %}
+{% extends "mainapp/elements/mainapp_base.html" %}
 {% load static i18n %}
 {% block title %}MegaKino | {% trans 'Контакти' %}{% endblock %}
 
+{% block style %}
+    <style>
+        body {
+            background: whitesmoke;
+        }
+
+        .contacts-page {
+            display: flex;
+        }
+
+        .middle-div {
+            width: 85%;
+            padding: 2%;
+        }
+
+        .contact-item {
+            display: flex;
+            justify-content: center;
+            align-items: end;
+            margin-bottom: 60px;
+            padding: 30px 5px;
+        }
+
+        .contact-item img {
+            border: 1px solid black;
+        }
+
+        .cinema-imgs {
+            margin-right: 50px;
+        }
+
+        .cinema-title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .cinema-logo {
+            width: 150px;
+            height: 100px;
+        }
+
+        .cinema-image {
+            width: 450px;
+            height: 350px;
+        }
+
+        .cinema-address {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .right-side-bar {
+            margin-top: 120px;
+        }
+
+        .right-content {
+            margin-right: 20px;
+            margin-bottom: 30px;
+        }
+
+        .context-promo-img {
+            width: 220px;
+            height: 340px;
+        }
+
+        @media screen and (max-width: 1300px) {
+            .contacts-page {
+                display: block;
+                justify-content: center;
+            }
+
+            .middle-div {
+                width: auto;
+            }
+
+            .right-side-bar {
+                display: flex;
+                justify-content: space-around;
+                margin-top: 25px;
+            }
+
+        }
+
+
+        @media screen and (max-width: 1050px) {
+
+            .contact-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cinema-imgs {
+                margin-right: 0;
+                margin-bottom: 30px;
+
+            }
+
+            .right-side-bar {
+                margin-top: 0;
+            }
+        }
+    </style>
+
+{% endblock %}
 
 {% block content %}
+    <div class="top-banner-div">
+        <img class="top-banner" src="/media/mainapp/pages/contacts/contacts.jpg" alt="top_banner">
+    </div>
+    <div class="contacts-page">
+        <div class="middle-div">
+            <h4 style="text-align: center">{% trans 'Контакти' %}</h4>
+            <br>
+            {% for c in cinemacontacts_list %}
+                <div hidden>
+                    {% cycle '/media/image/cinema_image/cinema_img_1.jpeg' '/media/image/cinema_image/cinema_img_2.jpg' as image %}
+                </div>
+                {% if c.is_active %}
+                    <div class="contact-item">
+                        <div class="cinema-imgs">
+                            <div class="cinema-title">
+                                <h4 style="max-width: 300px">{{ c.title }}</h4>
+                                <img class="cinema-logo" src="{{ c.logo_url }}" alt="logo">
+                            </div>
+                            <img class="cinema-image" src="{{ image }}" alt="image">
+                        </div>
+                        <div class="cinema-address">
+                            <div>
+                                <h4>{{ c.address|escape }}</h4>
+                            </div>
+                            {{ c.coordinates|safe }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="right-side-bar">
+            <div class="right-content">
+                <img class="context-promo-img" src="/media/image/context_promo.png" alt="context_promo">
+            </div>
+            <div class="fb-page right-content" data-href="https://www.facebook.com/facebook" data-tabs="timeline"
+                 data-width="250"
+                 data-height="340" data-small-header="false" data-adapt-container-width="true"
+                 data-hide-cover="false" data-show-facepile="true">
+                <blockquote cite="https://www.facebook.com/facebook" class="fb-xfbml-parse-ignore"><a
+                        href="https://www.facebook.com/facebook">Facebook</a></blockquote>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
 
 {% block script %}
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ru_RU/sdk.js#xfbml=1&version=v14.0"
+            nonce="H77MEAmC"></script>
 
+    {# Script change map size #}
+    <script>
+        let mapBoxs = document.querySelectorAll('iframe')
+        for (let elem of mapBoxs) {
+            elem.height = '350'
+            elem.width = '470'
+        }
+    </script>
 {% endblock %}
