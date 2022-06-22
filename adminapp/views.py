@@ -45,7 +45,7 @@ def banners(request):
     n_p_settings = BannersSettings.objects.get(settings_for='news-promotions_banners')
     t_b_settings_form = BannersSettingsForm(request.POST or None, instance=t_b_settings, prefix='t_b_settings')
     n_p_settings_form = BannersSettingsForm(request.POST or None, instance=n_p_settings, prefix='n_p_settings')
-
+    print(request.POST)
     if request.method == 'POST':
         if is_ajax(request=request):
             if background_banner_form.is_valid():

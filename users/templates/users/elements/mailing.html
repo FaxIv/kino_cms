@@ -12,6 +12,8 @@
 
         .page-content {
             margin: 0 auto;
+            display: flex;
+            justify-content: center;
         }
 
         .page-border {
@@ -20,6 +22,78 @@
             padding: 25px;
             width: 95%;
         }
+
+
+        .select-users-div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px;
+        }
+
+        .c-block {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px;
+
+        }
+
+        .mailing-result-data {
+            display: flex;
+        }
+
+        .select-mail {
+            position: absolute;
+            margin-bottom: 20px;
+
+        }
+
+
+        {#td.select-checkbox:before {#}
+        {#    margin-top: -10px;#}
+        {#}#}
+
+        .last-mail {
+            border: 2px solid black;
+            border-radius: 15px;
+            padding: 15px;
+            width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+
+        .mail-name {
+
+        }
+
+        .m-i-content {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            padding-bottom: 20px;
+
+        }
+
+        .m-i-content h6 {
+            margin-right: 20px;
+        }
+
+        .mail-count-div{
+            padding-right: 20px;
+        }
+
+        .start-btn-div{
+            display: flex;
+            justify-content: center;
+        }
+
+        .dt-buttons {
+            display: flex;
+            justify-content: center;
+        }
+
     </style>
 
 {% endblock %}
@@ -27,73 +101,138 @@
 
 
 {% block content %}
+    <br>
     <div class="page-content">
-        <div class="sms-div page-border">
-            <div style="text-align: center;">
-                <h3><b>SMS</b></h3>
-            </div>
-            <div>
-                <div><h6>{% trans 'Обрати користувачів для розсилки' %}</h6></div>
-                <div></div>
-                <div>
-                    <button type="button" class="btn btn-outline-info">{% trans 'Обрати користувачів' %}</button>
-                </div>
-            </div>
-            <button type="button" class="btn btn-outline-success">{% trans 'Почати розсилку' %}</button>
-        </div>
-
         <div class="mail-div page-border">
-            <div style="text-align: center;">
-                <h3><b>E-mail</b></h3>
-            </div>
-            <div><h6>{% trans 'Обрати користувачів для розсилки' %}</h6></div>
-            <div></div>
-            <div>
-                <button type="button" class="btn btn-outline-info">{% trans 'Обрати користувачів' %}</button>
-            </div>
-            <button type="button" class="btn btn-outline-success start-btn">{% trans 'Почати розсилку' %}</button>
-            {{ email_files }}
+            <form method="POST" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div style="text-align: center;">
+                    <h3><b>E-mail</b></h3>
+                </div>
+                <div class="select-users-div">
+                    <h6>{% trans 'Обрати користувачів для розсилки' %}</h6>
+                    <div class="icheck-primary d-inline">
+                        <input type="radio" id="radioPrimary1" name="r1">
+                        <label for="radioPrimary1">{% trans 'Всім користувачам' %}
+                        </label>
+                    </div>
+                    <div class="icheck-primary d-inline">
+                        <input type="radio" id="radioPrimary2" name="r1" checked="">
+                        <label for="radioPrimary2">{% trans 'Вибірково' %}
+                        </label>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-outline-info select-users-btn" data-toggle="modal"
+                                data-target="#staticBackdrop">{% trans 'Обрати користувачів' %}</button>
+                    </div>
+                </div>
+                <div class="c-block">
+                    <div class="l-block">
+                        <div class="m-i-content">
+                            <h6>{% trans 'Завантажти HTML-лист' %}</h6>
+                            <button type="button"
+                                    class="btn btn-outline-secondary download-mail">{% trans 'Завантажити' %}</button>
+                            <input hidden type="file" id="mail_input" name="mail_input" accept=text/html>
+                        </div>
+                        <div class="m-i-content">
+                            <h6>{% trans 'Завантажений файл' %}:</h6>
+                            <h6 class="download-file-name" style="color: blue"></h6>
+                        </div>
+                        <div class="m-i-content">
+                            <h6>{% trans 'Шаблон поточної розсилки' %}:</h6>
+                            <h6 class="current-template" style="color: blue"></h6>
+                        </div>
+                        <div class="mailing-result-data">
+                            <div class="m-i-content mail-count-div">
+                                <h6>{% trans 'Кількість листів' %}:</h6>
+                                <h6 class="mail-count" style="color: blue">0</h6>
+                            </div>
+                            <div>
+                                <h6>{% trans 'Розсилка виконана на' %}:</h6>
+                                <h6></h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="last-mail">
+                        <h6>{% trans 'Останні завантажені файли' %}</h6>
+                        <table id="mail-list">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th class="mail-name"></th>
+                                <th style="width: 250px;"></th>
+                                <th style="width: 150px;"></th>
+                                <th style="width: 100px;"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for m in mail_files %}
+                                <tr style="background: whitesmoke; color: black">
+                                    <td></td>
+                                    <td>{{ m.mail }}</td>
+                                    <td data-mailid="{{ m.id }}">{{ m.name }}</td>
+                                    <th>{{ m.date_created|date:'Y.m.d H:i' }}</th>
+                                    <td><a style="color: red" href="#">{% trans 'Видалити' %}</a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="start-btn-div">
+                    <button id="start_mailing" type="button"
+                            class="btn btn-outline-success start-btn">{% trans 'Почати розсилку' %}</button>
+                </div>
+            </form>
         </div>
     </div>
-
-    <div>
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">{% trans 'Користувачі' %}</h2>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <table id="mailing-users" class="table table-bordered table-hover">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>ID</th>
-                        <th>{% trans 'Дата реєстрації' %}</th>
-                        <th>{% trans 'День народження' %}</th>
-                        <th>Email</th>
-                        <th>{% trans 'Телефон' %}</th>
-                        <th>{% trans 'ПІБ' %}</th>
-                        <th>{% trans 'Псевдонім' %}</th>
-                        <th>{% trans 'Місто' %}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for u in site_users %}
-                        <tr style="background: white; color: black">
-                            <td></td>
-                            <td>{{ u.id }}</td>
-                            <td>{{ u.date_joined }}</td>
-                            <td>{{ u.birthday }}</td>
-                            <td>{{ u.email }}</td>
-                            <td>{{ u.phone }}</td>
-                            <td>{{ u.first_name }} {{ u.last_name }}</td>
-                            <td>{{ u.username }}</td>
-                            <td>{{ u.city }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                    <tfoot>
-                </table>
+    <div id="users-popup" class="popup">
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="mailing-users" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>ID</th>
+                                    <th>{% trans 'Дата реєстрації' %}</th>
+                                    <th>{% trans 'День народження' %}</th>
+                                    <th>Email</th>
+                                    <th>{% trans 'Телефон' %}</th>
+                                    <th>{% trans 'ПІБ' %}</th>
+                                    <th>{% trans 'Псевдонім' %}</th>
+                                    <th>{% trans 'Місто' %}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for u in site_users %}
+                                    <tr style="background: white; color: black">
+                                        <td></td>
+                                        <td>{{ u.id }}</td>
+                                        <td>{{ u.date_joined }}</td>
+                                        <td>{{ u.birthday }}</td>
+                                        <td>{{ u.email }}</td>
+                                        <td>{{ u.phone }}</td>
+                                        <td>{{ u.first_name }} {{ u.last_name }}</td>
+                                        <td>{{ u.username }}</td>
+                                        <td>{{ u.city }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -112,7 +251,50 @@
     <!-- Page specific script -->
     <script>
         $(function () {
-            let users_table = $('#mailing-users').DataTable( {
+            let mailPath
+            let selectedUsersMailLocal = []
+            let selectedUsersMail = []
+            const csrf_token = document.querySelector('input[name=csrfmiddlewaretoken]').value
+
+            $('.download-mail').click(function () {
+                $('#mail_input').click()
+            })
+
+            let mail_table = $('#mail-list').DataTable({
+                aoColumnDefs: [{"bVisible": false, "aTargets": [1]}],
+                columnDefs: [
+                    {
+                        oderable: false,
+                        className: 'select-checkbox select-mail',
+                        targets: 0,
+                    },
+                    {
+                        bVisible: false,
+                        targets: 1,
+                    },
+                ],
+                select: true,
+                "lengthChange": false,
+                "ordering": false,
+                "paging": false,
+                "info": false,
+                "bFilter": false,
+            });
+
+            mail_table
+                .on('deselect', function () {
+                    $('.current-template').html('')
+                })
+
+                .on('select', function (e, dt, type, indexes) {
+                    let rowData = mail_table.rows(indexes).data().toArray();
+                    mailPath = rowData[0][1]
+                    console.log(mailPath)
+                    $('.current-template').html(rowData[0][2]);
+                })
+
+
+            let users_table = $('#mailing-users').DataTable({
                 dom: 'frtipB',
                 columnDefs: [{
                     oderable: false,
@@ -123,14 +305,25 @@
                     style: 'multi',
                     selector: 'td:first-child',
                 },
-                buttons: [{
-                    text: 'Відправити обраним',
-                    className: 'select-this',
-                    action: function (){
-                        let l = users_table.rows({ selected: true }).count();
-                        alert(l);
-                    },
-                }],
+
+                buttons: [
+                    {
+                        text: 'Відправити обраним',
+                        className: 'select-this btn btn-outline-success',
+
+                        action: function () {
+                            let selectedUsers = users_table.rows({selected: true}).data();
+                            let n = users_table.rows({selected: true}).count()
+                            let localUsers = []
+                            for (let i = 0; i < n; i++) {
+                                localUsers.push(selectedUsers[i][4])
+                            }
+                            selectedUsersMailLocal = localUsers
+                            selectedUsersMail = localUsers
+                            $('.mail-count').html(n)
+                        },
+                    }
+                ],
                 "lengthChange": false,
                 "language": {
                     "search": "Пошук:",
@@ -140,40 +333,84 @@
                         "next": "Наступна",
                         "last": "Остання"
                     },
+                    "select": {
+                        "rows": {
+                            "_": "Обрано користувачів: %d"
+                        },
+                    },
                     "emptyTable": "Ця таблиця не містить даних",
                     "info": "Показано від _START_ по _END_ з _TOTAL_ записів",
+                    "select-info": "qwe"
                 },
             })
-        })
 
-        {#$(function () {#}
-        {#    $('#mailing-users').DataTable({#}
-        {#        columnDefs: [{#}
-        {#            orderable: true,#}
-        {#            className: 'select-checkbox',#}
-        {#            targets: 0#}
-        {#        }],#}
-        {#        select: {#}
-        {#            style: 'multi',#}
-        {#            selector: 'td:first-child',#}
-        {#        },#}
-        {#        "paging": true,#}
-        {#        "lengthChange": false,#}
-        {#        "ordering": true,#}
-        {#        "info": true,#}
-        {#        "responsive": true,#}
-        {#        "language": {#}
-        {#            "search": "Пошук:",#}
-        {#            "paginate": {#}
-        {#                "first": "Перша",#}
-        {#                "previous": "Попередня",#}
-        {#                "next": "Наступна",#}
-        {#                "last": "Остання"#}
-        {#            },#}
-        {#            "emptyTable": "Ця таблиця не містить даних",#}
-        {#            "info": "Показано від _START_ по _END_ з _TOTAL_ записів",#}
-        {#        },#}
-        {#    });#}
-        {#)#}
+            $('.select-this').attr("data-dismiss", "modal");
+            $('.close-btn').attr("data-dismiss", "modal");
+
+            $('#radioPrimary1').on('click', function () {
+                $('.select-users-btn').attr("disabled", "true")
+                let n = users_table.rows().count();
+                let allUsers = users_table.rows().data();
+                let localUsers = []
+                for (let i = 0; i < n; i++) {
+                    localUsers.push(allUsers[i][4])
+                }
+                selectedUsersMail = localUsers
+                $('.mail-count').html(n)
+            });
+
+            $('#radioPrimary2').on('click', function () {
+                $('.select-users-btn').removeAttr("disabled");
+                let n = selectedUsersMailLocal.length
+                selectedUsersMail = selectedUsersMailLocal
+                $('.mail-count').html(n)
+            })
+
+
+            $('input[name=mail_input]').on('change', function () {
+                let mailInput = $('input[name=mail_input]')[0].files[0]
+                console.log('work load')
+                console.log(mailInput)
+                let formData = new FormData()
+                formData.append('inp_type', 'mail-input')
+                formData.append('mail', mailInput)
+                $.ajax({
+                    headers: {'X-CSRFToken': csrf_token},
+                    url: "{% url 'mailing' %}",
+                    method: 'post',
+                    dataType: 'json',
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (response) {
+                        mailPath = response['last_mail_path']
+                    }
+                })
+                $('.download-file-name').html(mailInput['name'])
+                $('.current-template').html(mailInput['name'])
+            })
+
+            $('#start_mailing').click(function () {
+                console.log(mailPath)
+                let formData = new FormData()
+                formData.append('inp_type', 'start-mailing')
+                formData.append('users_id', JSON.stringify(selectedUsersMail))
+                formData.append('mail', mailPath)
+                $.ajax({
+                    headers: {'X-CSRFToken': csrf_token},
+                    url: "{% url 'mailing' %}",
+                    method: 'post',
+                    dataType: 'html',
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (data) {
+                        alert('Листи відправлено успішно');
+                    }
+                })
+            })
+        })
     </script>
 {% endblock %}

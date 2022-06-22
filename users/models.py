@@ -38,6 +38,7 @@ class SiteUser(AbstractUser):
 
 
 class MailFiles(models.Model):
+    name = models.CharField(max_length=200, default='mail-templates')
     mail = models.FileField(upload_to='users/mail/', null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
